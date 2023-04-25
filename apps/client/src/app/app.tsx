@@ -1,5 +1,6 @@
 import { Route, Routes, Link } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { Items } from './items';
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,8 @@ export function RoutesConfig() {
                             <Link to="/">
                                 Click here to go back to root page.
                             </Link>
+
+                            <Items />
                         </div>
                     }
                 />
