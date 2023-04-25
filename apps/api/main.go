@@ -17,7 +17,16 @@ type Item struct {
 	SellingPrice float64 `json:"selling_price"`
 }
 
+type Sale struct {
+	ID        string  `json:"id"`
+	ItemID    string  `json:"item_id"`
+	Quantity  int     `json:"quantity"`
+	Total     float64 `json:"total"`
+	CreatedAt string  `json:"created_at"`
+}
+
 var items []Item
+var sales []Sale
 
 func main() {
 	items = []Item{
@@ -42,6 +51,11 @@ func main() {
 			r.Put("/", updateItem)
 			r.Delete("/", deleteItem)
 		})
+	})
+
+	r.Route("/api/v1/sales", func(r chi.Router) {
+		r.Get("/", getSales)
+		// r.Post("/", createSale)
 	})
 
 	err := http.ListenAndServe(":3333", r)
@@ -106,4 +120,14 @@ func deleteItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.NotFound(w, r)
+}
+
+func getSales(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	jsonBytes, err := json.Marshal(sales)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	_, _ = w.Write(jsonBytes)
 }
