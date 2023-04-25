@@ -1,34 +1,50 @@
 import { useQuery, useQueryClient } from 'react-query';
 
 export const Items = () => {
-    const { isLoading, error, data } = useQuery('get-items', getItems);
+    const { isLoading, error, data } = useQuery({
+        queryKey: ['get-items'],
+        queryFn: getItems,
+    });
     const queryClient = useQueryClient();
 
     function handleInvalidate() {
         // Invalidate and refetch any query with the key 'get-items'
-        queryClient.invalidateQueries('get-items')
+        queryClient.invalidateQueries({ queryKey: ['get-items'] });
     }
 
     return (
-        <div>
+        <>
             <h1>Items</h1>
-            <button onClick={handleInvalidate} className='btn'>Invalidate</button>
+            <button onClick={handleInvalidate} className="btn mb-2">
+                Refetch Items
+            </button>
 
             {isLoading && <div>Loading...</div>}
             {error && <div>Error: {error}</div>}
 
+            <div className='overflow-x-auto'>
             {data && (
-                <div>
-                    {data.map((item) => (
-                        <div key={item.id}>
-                            <div>{item.name}</div>
-                            <div>{item.buying_price}</div>
-                            <div>{item.selling_price}</div>
-                        </div>
-                    ))}
-                </div>
+                <table className='table w-full'>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Buying Price</th>
+                            <th>Selling Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {data.map((item) => (
+                            <tr key={item.id} className='hover'>
+                                <td>{item.name}</td>
+                                <td>{item.buying_price}</td>
+                                <td>{item.selling_price}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             )}
-        </div>
+            </div>
+        </>
     );
 };
 
