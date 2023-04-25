@@ -1,23 +1,19 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import styles from "./app.module.css";
+import { Route, Routes, Link } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
-import NxWelcome from "./nx-welcome";
+const queryClient = new QueryClient();
 
-import { Route, Routes, Link } from "react-router-dom";
+function App() {
+    return (
+        <QueryClientProvider client={queryClient}>
+            <RoutesConfig />
+        </QueryClientProvider>
+    );
+}
 
-export function App() {
+export function RoutesConfig() {
     return (
         <>
-            <NxWelcome title="client" />
-
-            <div />
-
-            {/* START: routes */}
-            {/* These routes and navigation have been generated for you */}
-            {/* Feel free to move and update them to fit your needs */}
-            <br />
-            <hr />
-            <br />
             <div role="navigation">
                 <ul>
                     <li>
@@ -33,7 +29,7 @@ export function App() {
                     path="/"
                     element={
                         <div>
-                            This is the generated root route.{" "}
+                            This is the generated root route.{' '}
                             <Link to="/page-2">Click here for page 2.</Link>
                         </div>
                     }
@@ -49,7 +45,6 @@ export function App() {
                     }
                 />
             </Routes>
-            {/* END: routes */}
         </>
     );
 }

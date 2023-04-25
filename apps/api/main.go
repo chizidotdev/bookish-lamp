@@ -32,6 +32,7 @@ var sales []Sale
 func main() {
 	items = []Item{
 		{ID: "1", Name: "Perfume 1", BuyingPrice: 100, SellingPrice: 200},
+		{ID: "2", Name: "Perfume 2", BuyingPrice: 200, SellingPrice: 300},
 	}
 
 	r := chi.NewRouter()
