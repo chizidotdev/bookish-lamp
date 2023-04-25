@@ -37,6 +37,20 @@ func main() {
 		_, _ = w.Write(jsonBytes)
 	})
 
+	r.Post("/items", func(w http.ResponseWriter, r *http.Request) {
+		var item Item
+		err := json.NewDecoder(r.Body).Decode(&item)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		items = append(items, item)
+
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(item)
+	})
+
 	err := http.ListenAndServe(":8000", r)
 	log.Fatal(err)
 }
