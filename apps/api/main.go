@@ -11,7 +11,7 @@ import (
 )
 
 type Item struct {
-	ID           int     `json:"id"`
+	ID           string  `json:"id"`
 	Name         string  `json:"name"`
 	BuyingPrice  float64 `json:"buying_price"`
 	SellingPrice float64 `json:"selling_price"`
@@ -21,7 +21,7 @@ var items []Item
 
 func main() {
 	items = []Item{
-		{ID: 1, Name: "Perfume 1", BuyingPrice: 100, SellingPrice: 200},
+		{ID: "1", Name: "Perfume 1", BuyingPrice: 100, SellingPrice: 200},
 	}
 
 	r := chi.NewRouter()
@@ -38,9 +38,9 @@ func main() {
 		r.Post("/", createItem)
 
 		r.Route("/{id}", func(r chi.Router) {
-			r.Get("/", getItemById)
-			// r.Put("/", updateItem)
-			// r.Delete("/", deleteItem)
+			// r.Get("/", getItemById)
+			r.Put("/", updateItem)
+			r.Delete("/", deleteItem)
 		})
 	})
 
@@ -72,15 +72,38 @@ func createItem(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(item)
 }
 
-func getItemById(w http.ResponseWriter, r *http.Request) {
+func updateItem(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
 	for _, item := range items {
-		if id == string(item.ID) {
+		if id == item.ID {
+			err := json.NewDecoder(r.Body).Decode(&item)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+
+			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(item)
 			return
 		}
 	}
 
-	w.WriteHeader(http.StatusNotFound)
+	http.NotFound(w, r)
+}
+
+func deleteItem(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+
+	for i, item := range items {
+		if id == item.ID {
+			items = append(items[:i], items[i+1:]...)
+
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode("Item deleted successfully")
+			return
+		}
+	}
+
+	http.NotFound(w, r)
 }
