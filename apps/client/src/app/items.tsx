@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from 'react-query';
+import { Table } from '@copia/ui';
 
 export const Items = () => {
     const { isLoading, error, data } = useQuery({
@@ -22,27 +23,27 @@ export const Items = () => {
             {isLoading && <div>Loading...</div>}
             {error && <div>Error: {error}</div>}
 
-            <div className='overflow-x-auto'>
-            {data && (
-                <table className='table w-full'>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Buying Price</th>
-                            <th>Selling Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.map((item) => (
-                            <tr key={item.id} className='hover'>
-                                <td>{item.name}</td>
-                                <td>{item.buying_price}</td>
-                                <td>{item.selling_price}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
+            <div className="overflow-x-auto">
+                {data && (
+                    <Table>
+                        <Table.Thead>
+                            <Table.Row>
+                                <Table.Th>Name</Table.Th>
+                                <Table.Th>Buying Price</Table.Th>
+                                <Table.Th>Selling Price</Table.Th>
+                            </Table.Row>
+                        </Table.Thead>
+                        <Table.Tbody>
+                            {data.map((item) => (
+                                <Table.Row key={item.id}>
+                                    <Table.Td>{item.name}</Table.Td>
+                                    <Table.Td>{item.buying_price}</Table.Td>
+                                    <Table.Td>{item.selling_price}</Table.Td>
+                                </Table.Row>
+                            ))}
+                        </Table.Tbody>
+                    </Table>
+                )}
             </div>
         </>
     );
