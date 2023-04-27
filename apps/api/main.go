@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -10,52 +8,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 
 	_ "github.com/lib/pq"
 )
-
-type Item struct {
-	gorm.Model
-	ID           string  `json:"id" gorm:"primaryKey"`
-	Name         string  `json:"name"`
-	BuyingPrice  float64 `json:"buying_price"`
-	SellingPrice float64 `json:"selling_price"`
-}
-
-type Sale struct {
-	gorm.Model
-	ID        string  `json:"id" gorm:"primaryKey"`
-	ItemID    string  `json:"item_id"`
-	Quantity  int     `json:"quantity"`
-	Total     float64 `json:"total"`
-	CreatedAt string  `json:"created_at"`
-}
-
-var DB *gorm.DB
-var items []Item
-var sales []Sale
-
-func init() {
-	// db, err := sql.Open("postgres", "postgresql://postgres:postgres@localhost:5432/copia")
-
-	dsn := "host=localhost user=postgres password=postgres dbname=copia port=5432 sslmode=disable"
-	db, err := gorm.Open(postgres.New(postgres.Config{
-		DSN: dsn,
-	}), &gorm.Config{})
-
-	if err != nil {
-		log.Fatal("Failed to connect database", err)
-	}
-
-	db.AutoMigrate(&Item{})
-	db.AutoMigrate(&Sale{})
-	db.Create(&Item{ID: "1", Name: "Perfume 1", BuyingPrice: 100, SellingPrice: 200})
-
-	fmt.Println("Connected to DB")
-	DB = db
-}
 
 func main() {
 	// items = []Item{
@@ -99,74 +54,4 @@ func main() {
 
 	err := http.ListenAndServe(":3333", r)
 	log.Fatal(err)
-}
-
-func getItems(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	jsonBytes, err := json.Marshal(items)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	_, _ = w.Write(jsonBytes)
-}
-
-func createItem(w http.ResponseWriter, r *http.Request) {
-	var item Item
-	err := json.NewDecoder(r.Body).Decode(&item)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	items = append(items, item)
-
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(item)
-}
-
-func updateItem(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-
-	for _, item := range items {
-		if id == item.ID {
-			err := json.NewDecoder(r.Body).Decode(&item)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
-
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(item)
-			return
-		}
-	}
-
-	http.NotFound(w, r)
-}
-
-func deleteItem(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-
-	for i, item := range items {
-		if id == item.ID {
-			items = append(items[:i], items[i+1:]...)
-
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode("Item deleted successfully")
-			return
-		}
-	}
-
-	http.NotFound(w, r)
-}
-
-func getSales(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	jsonBytes, err := json.Marshal(sales)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	_, _ = w.Write(jsonBytes)
 }
