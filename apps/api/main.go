@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -9,31 +10,58 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+
+	_ "github.com/lib/pq"
 )
 
 type Item struct {
-	ID           string  `json:"id"`
+	gorm.Model
+	ID           string  `json:"id" gorm:"primaryKey"`
 	Name         string  `json:"name"`
 	BuyingPrice  float64 `json:"buying_price"`
 	SellingPrice float64 `json:"selling_price"`
 }
 
 type Sale struct {
-	ID        string  `json:"id"`
+	gorm.Model
+	ID        string  `json:"id" gorm:"primaryKey"`
 	ItemID    string  `json:"item_id"`
 	Quantity  int     `json:"quantity"`
 	Total     float64 `json:"total"`
 	CreatedAt string  `json:"created_at"`
 }
 
+var DB *gorm.DB
 var items []Item
 var sales []Sale
 
-func main() {
-	items = []Item{
-		{ID: "1", Name: "Perfume 1", BuyingPrice: 100, SellingPrice: 200},
-		{ID: "2", Name: "Perfume 2", BuyingPrice: 200, SellingPrice: 300},
+func init() {
+	// db, err := sql.Open("postgres", "postgresql://postgres:postgres@localhost:5432/copia")
+
+	dsn := "host=localhost user=postgres password=postgres dbname=copia port=5432 sslmode=disable"
+	db, err := gorm.Open(postgres.New(postgres.Config{
+		DSN: dsn,
+	}), &gorm.Config{})
+
+	if err != nil {
+		log.Fatal("Failed to connect database", err)
 	}
+
+	db.AutoMigrate(&Item{})
+	db.AutoMigrate(&Sale{})
+	db.Create(&Item{ID: "1", Name: "Perfume 1", BuyingPrice: 100, SellingPrice: 200})
+
+	fmt.Println("Connected to DB")
+	DB = db
+}
+
+func main() {
+	// items = []Item{
+	// 	{ID: "1", Name: "Perfume 1", BuyingPrice: 100, SellingPrice: 200},
+	// 	{ID: "2", Name: "Perfume 2", BuyingPrice: 200, SellingPrice: 300},
+	// }
 
 	r := chi.NewRouter()
 
