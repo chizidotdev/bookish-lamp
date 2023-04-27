@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func getSales(w http.ResponseWriter, r *http.Request) {
+func (h handler) GetAllSales(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	jsonBytes, err := json.Marshal(sales)
 	if err != nil {

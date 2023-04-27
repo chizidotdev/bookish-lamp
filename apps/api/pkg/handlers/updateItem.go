@@ -7,7 +7,7 @@ import (
 	"github.com/go-chi/chi"
 )
 
-func updateItem(w http.ResponseWriter, r *http.Request) {
+func (h handler) UpdateItem(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
 	for _, item := range items {

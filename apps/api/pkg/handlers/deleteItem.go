@@ -6,7 +6,7 @@ import (
 	"github.com/go-chi/chi"
 )
 
-func deleteItem(w http.ResponseWriter, r *http.Request) {
+func (h handler) DeleteItem(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
 	for i, item := range items {

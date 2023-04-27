@@ -1,14 +1,15 @@
 package db
 
 import (
-	"fmt"
 	"log"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"copia/api/apps/api/pkg/models"
 )
 
-func init() {
+func Init() *gorm.DB {
 	dsn := "host=localhost user=postgres password=postgres dbname=copia port=5432 sslmode=disable"
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN: dsn,
@@ -18,10 +19,11 @@ func init() {
 		log.Fatal("Failed to connect database", err)
 	}
 
-	db.AutoMigrate(&Item{})
-	db.AutoMigrate(&Sale{})
-	db.Create(&Item{ID: "1", Name: "Perfume 1", BuyingPrice: 100, SellingPrice: 200})
+	log.Println("Connected to DB")
 
-	fmt.Println("Connected to DB")
-	DB = db
+	db.AutoMigrate(&models.Item{})
+	db.AutoMigrate(&models.Sale{})
+	// db.Create(&models.Item{ID: "1", Name: "Perfume 1", BuyingPrice: 100, SellingPrice: 200})
+
+	return db
 }

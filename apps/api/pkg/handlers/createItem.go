@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func createItem(w http.ResponseWriter, r *http.Request) {
+func (h handler) CreateItem(w http.ResponseWriter, r *http.Request) {
 	var item Item
 	err := json.NewDecoder(r.Body).Decode(&item)
 	if err != nil {

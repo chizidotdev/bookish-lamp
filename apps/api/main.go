@@ -10,14 +10,14 @@ import (
 	"github.com/go-chi/cors"
 
 	_ "github.com/lib/pq"
+
+	"copia/api/apps/api/pkg/db"
+	"copia/api/apps/api/pkg/handlers"
 )
 
 func main() {
-	// items = []Item{
-	// 	{ID: "1", Name: "Perfume 1", BuyingPrice: 100, SellingPrice: 200},
-	// 	{ID: "2", Name: "Perfume 2", BuyingPrice: 200, SellingPrice: 300},
-	// }
-
+	DB := db.Init()
+	h := handlers.New(DB)
 	r := chi.NewRouter()
 
 	r.Use(middleware.RequestID)
@@ -37,21 +37,22 @@ func main() {
 	r.Use(corsMiddleware.Handler)
 
 	r.Route("/api/v1/items", func(r chi.Router) {
-		r.Get("/", getItems)
-		r.Post("/", createItem)
+		r.Get("/", h.GetAllItems)
+		r.Post("/", h.CreateItem)
 
 		r.Route("/{id}", func(r chi.Router) {
 			// r.Get("/", getItemById)
-			r.Put("/", updateItem)
-			r.Delete("/", deleteItem)
+			r.Put("/", h.UpdateItem)
+			r.Delete("/", h.DeleteItem)
 		})
 	})
 
 	r.Route("/api/v1/sales", func(r chi.Router) {
-		r.Get("/", getSales)
+		r.Get("/", h.GetAllSales)
 		// r.Post("/", createSale)
 	})
 
+	log.Println("Server running on port 3333")
 	err := http.ListenAndServe(":3333", r)
 	log.Fatal(err)
 }

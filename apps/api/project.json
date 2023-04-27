@@ -15,7 +15,8 @@
       "executor": "@nx-go/nx-go:serve",
       "options": {
         // "cmd": "gow",
-        "main": "apps/api/main.go"
+        "main": "apps/api/main.go",
+        "handlers": "apps/api/pkg/handlers"
       }
     },
     "test": {
