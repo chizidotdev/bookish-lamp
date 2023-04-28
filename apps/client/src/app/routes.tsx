@@ -1,19 +1,11 @@
 import { Route, Routes, Link } from 'react-router-dom';
+import { Navbar } from '@copia/ui';
 import { Items } from './items';
 
 export function RoutesConfig() {
     return (
         <>
-            <div role="navigation">
-                <ul>
-                    <li>
-                        <Link to="/">Home</Link>
-                    </li>
-                    <li>
-                        <Link to="/page-2">Page 2</Link>
-                    </li>
-                </ul>
-            </div>
+            <Navbar navItems={navItems} />
             <Routes>
                 <Route
                     path="/"
@@ -41,4 +33,13 @@ export function RoutesConfig() {
     );
 }
 
-
+export const navItems = [
+    {
+        name: 'Products',
+        path: '/products',
+    },
+    {
+        name: 'Sales',
+        path: '/sales',
+    },
+];

@@ -1,10 +1,11 @@
 import { useQuery, useQueryClient } from 'react-query';
-import { Table } from '@copia/ui';
+import { Table, Button } from '@copia/ui';
 
 export const Items = () => {
-    const { isLoading, error, data } = useQuery({
+    const { isLoading, data } = useQuery({
         queryKey: ['get-items'],
         queryFn: getItems,
+        refetchOnWindowFocus: false,
     });
     const queryClient = useQueryClient();
 
@@ -14,14 +15,11 @@ export const Items = () => {
     }
 
     return (
-        <>
+        <div>
             <h1>Items</h1>
-            <button onClick={handleInvalidate} className="btn mb-2">
-                Refetch Items
-            </button>
+            <Button onClick={handleInvalidate}>Refetch Items</Button>
 
             {isLoading && <div>Loading...</div>}
-            {error && <div>Error: {error}</div>}
 
             <div className="overflow-x-auto">
                 {data && (
@@ -44,14 +42,18 @@ export const Items = () => {
                                     <Table.Td>{item.quantity}</Table.Td>
                                     <Table.Td>{item.buying_price}</Table.Td>
                                     <Table.Td>{item.selling_price}</Table.Td>
-                                    <Table.Td>{new Date(item.CreatedAt).toLocaleString()}</Table.Td>
+                                    <Table.Td>
+                                        {new Date(
+                                            item.CreatedAt
+                                        ).toLocaleString()}
+                                    </Table.Td>
                                 </Table.Row>
                             ))}
                         </Table.Tbody>
                     </Table>
                 )}
             </div>
-        </>
+        </div>
     );
 };
 
