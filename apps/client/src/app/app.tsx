@@ -6,11 +6,13 @@ const queryClient = new QueryClient();
 
 function App() {
     return (
-        <QueryClientProvider client={queryClient}>
-            <BrowserRouter>
-                <RoutesConfig />
-            </BrowserRouter>
-        </QueryClientProvider>
+        <div className="max-w-4xl mx-auto">
+            <QueryClientProvider client={queryClient}>
+                <BrowserRouter>
+                    <RoutesConfig />
+                </BrowserRouter>
+            </QueryClientProvider>
+        </div>
     );
 }
 
