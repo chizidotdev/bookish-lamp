@@ -1,16 +1,20 @@
 package handlers
 
 import (
+	"copia/api/apps/api/pkg/models"
 	"encoding/json"
 	"net/http"
 )
 
 func (h handler) GetAllSales(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	jsonBytes, err := json.Marshal(sales)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	var sales []models.Item
+
+	if err := h.DB.Find(&sales).Error; err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
-	_, _ = w.Write(jsonBytes)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(sales)
 }

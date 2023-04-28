@@ -1,23 +1,26 @@
 package handlers
 
 import (
+	"copia/api/apps/api/pkg/models"
 	"encoding/json"
 	"net/http"
+
 	"github.com/go-chi/chi"
 )
 
 func (h handler) DeleteItem(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
-	for i, item := range items {
-		if id == item.ID {
-			items = append(items[:i], items[i+1:]...)
+	var item models.Item
 
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode("Item deleted successfully")
-			return
-		}
+	if err := h.DB.First(&item, id).Error; err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
 	}
 
-	http.NotFound(w, r)
+	h.DB.Delete(&item)
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode("Item deleted successfully")
 }
