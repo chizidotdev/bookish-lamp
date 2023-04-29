@@ -5,18 +5,11 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 )
 
 func (h handler) UpdateItem(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
-	var updatedItem models.Item
-
-	defer r.Body.Close()
-	if err := json.NewDecoder(r.Body).Decode(&updatedItem); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
 
 	var item models.Item
 	if err := h.DB.First(&item, id).Error; err != nil {
@@ -24,10 +17,10 @@ func (h handler) UpdateItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	item.BuyingPrice = updatedItem.BuyingPrice
-	item.SellingPrice = updatedItem.SellingPrice
-	item.Quantity = updatedItem.Quantity
-	item.Name = updatedItem.Name
+	if err := json.NewDecoder(r.Body).Decode(&item); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	if err := h.DB.Save(&item).Error; err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
