@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -52,7 +53,12 @@ func main() {
 		// r.Post("/", createSale)
 	})
 
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3333"
+	}
+
 	log.Println("Server running on port 3333")
-	err := http.ListenAndServe(":3333", r)
+	err := http.ListenAndServe(":"+port, r)
 	log.Fatal(err)
 }
