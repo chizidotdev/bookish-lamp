@@ -8,12 +8,19 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/joho/godotenv"
 
 	_ "github.com/lib/pq"
 
 	"copia/api/apps/api/pkg/db"
 	"copia/api/apps/api/pkg/handlers"
 )
+
+func init() {
+	if err := godotenv.Load("../../.env"); err != nil {
+		log.Fatal(err)
+	}
+}
 
 func main() {
 	DB := db.Init()
