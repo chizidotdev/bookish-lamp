@@ -3,11 +3,13 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import viteTsConfigPaths from "vite-tsconfig-paths";
 
+const port = Number(process.env.PORT) || 3000;
+
 export default defineConfig({
     cacheDir: "../../node_modules/.vite/client",
 
     server: {
-        port: 4200,
+        port,
         host: "localhost",
     },
 
