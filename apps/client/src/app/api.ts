@@ -6,7 +6,7 @@ export type ItemBase = {
 };
 
 type Item = ItemBase & {
-    id: string;
+    ID: string;
     CreatedAt: string;
 };
 
@@ -22,6 +22,14 @@ export const addItem = async (item: ItemBase): Promise<Item> => {
     const response = await fetch(`${BASE_URL}/items`, {
         method: 'POST',
         body: JSON.stringify(item),
+    });
+    const data = await response.json();
+    return data;
+};
+
+export const deleteItem = async (id: string): Promise<string> => {
+    const response = await fetch(`${BASE_URL}/items/${id}`, {
+        method: 'DELETE',
     });
     const data = await response.json();
     return data;

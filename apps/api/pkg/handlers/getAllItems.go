@@ -9,7 +9,8 @@ import (
 func (h handler) GetAllItems(w http.ResponseWriter, r *http.Request) {
 	var items []models.Item
 
-	if err := h.DB.Find(&items).Error; err != nil {
+	err := h.DB.Order("created_at DESC, id DESC").Find(&items).Error
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}

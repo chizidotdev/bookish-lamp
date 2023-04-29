@@ -27,7 +27,7 @@ export const Navbar = ({ navItems }: NavbarProps) => {
                         ))}
                     </ul>
                 </div>
-                <NavLink to="/items/create" className="btn btn-sm">
+                <NavLink to="/items/create" className="btn btn-sm mr-1">
                     Add Item
                 </NavLink>
             </div>

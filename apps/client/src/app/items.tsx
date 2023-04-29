@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query';
 import { ItemCard } from '@copia/ui';
 import { getItems } from './api';
+import { Outlet } from 'react-router-dom';
 
 export const Items = () => {
     const { isLoading, data } = useQuery({
@@ -13,10 +14,11 @@ export const Items = () => {
         <div className="my-5">
             {isLoading && <div>Loading...</div>}
 
-            <div className="flex flex-col gap-2 mx-2">
+            <div className="flex flex-col gap-3">
                 {data &&
-                    data.map((item) => <ItemCard key={item.id} item={item} />)}
+                    data.map((item) => <ItemCard key={item.ID} item={item} />)}
             </div>
+            <Outlet />
         </div>
     );
 };

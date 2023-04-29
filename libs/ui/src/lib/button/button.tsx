@@ -8,6 +8,11 @@ export type ButtonProps = VariantProps<typeof buttonStyles> &
 
 const buttonStyles = cva(['btn'], {
     variants: {
+        variant: {
+            primary: ['btn-primary'],
+            secondary: ['btn-secondary'],
+            danger: ['btn-error'],
+        },
         loading: { true: 'loading' },
         size: {
             small: ['btn-sm'],
@@ -18,9 +23,17 @@ const buttonStyles = cva(['btn'], {
     },
 });
 
-export function Button({ children, loading, size }: ButtonProps) {
+export function Button({
+    children,
+    loading,
+    size,
+    variant,
+    ...props
+}: ButtonProps) {
     return (
-        <button className={buttonStyles({ loading, size })}>{children}</button>
+        <button className={buttonStyles({ loading, size, variant })} {...props}>
+            {children}
+        </button>
     );
 }
 

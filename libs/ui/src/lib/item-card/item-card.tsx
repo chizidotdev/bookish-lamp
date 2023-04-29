@@ -6,7 +6,7 @@ export type ItemCardProps = {
 };
 
 type Item = {
-    id: string;
+    ID: string;
     name: string;
     buying_price: number;
     selling_price: number;
@@ -15,7 +15,7 @@ type Item = {
 };
 
 export function ItemCard({ item }: ItemCardProps) {
-    const { name, buying_price, selling_price, quantity, CreatedAt } = item;
+    const { ID, name, buying_price, selling_price, quantity, CreatedAt } = item;
 
     return (
         <div className="card bg-base-200 shadow-md">
@@ -26,11 +26,11 @@ export function ItemCard({ item }: ItemCardProps) {
                 />
             </figure>*/}
 
-            <div className="card-body flex-row items-center justify-between gap-14">
+            <div className="card-body flex-row items-center justify-between gap-1 mx-0">
                 <div className="flex-1 flex flex-col">
                     <div className="indicator">
                         <span
-                            className={`indicator-item indicator-start badge ${
+                            className={`indicator-item indicator-start badge badge-sm ${
                                 !quantity ? 'badge-error' : 'badge-secondary'
                             }`}
                         >
@@ -39,16 +39,16 @@ export function ItemCard({ item }: ItemCardProps) {
                         <h2 className="card-title">{name}</h2>
                     </div>
                     <div className="flex">
-                        <div className="badge badge-md">N{buying_price}</div>
+                        <div className="badge badge-sm">N{buying_price}</div>
                     </div>
                 </div>
                 {/*<p>If a dog chews shoes whose shoes does he choose?</p>*/}
-                <div className="font-bold text-xl">N{selling_price}</div>
-                <div className="card-actions gap-1 justify-end">
-                    <Link to="/products/edit">
+                <div className="font-bold text-xl w-16">N{selling_price}</div>
+                <div className="card-actions flex-row gap-5">
+                    <Link to={`/items/edit/${ID}`}>
                         <FaEdit className="text-secondary" />
                     </Link>
-                    <Link to="/products/delete">
+                    <Link to={`/items/delete/${ID}`}>
                         <FaTrash className="text-error" />
                     </Link>
                 </div>
