@@ -1,28 +1,39 @@
 import { Button, Input } from '@copia/ui';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
-import { addItem, ItemBase } from './api';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getItemById, ItemBase, updateItem } from './api';
 
 export const EditItem = () => {
+    const { id } = useParams();
     const navigate = useNavigate();
-    const { mutate, isLoading } = useMutation({
-        mutationFn: addItem,
-        onSuccess: () => {
-            navigate('/');
-        },
+    const queryClient = useQueryClient();
+    const { isLoading: isFetching, data } = useQuery({
+        queryKey: ['get-item-by-id'],
+        queryFn: () => getItemById(id ?? ''),
+        refetchOnWindowFocus: false,
     });
 
-    const {
-        register,
-        handleSubmit,
-    } = useForm<ItemBase>();
-    const onSubmit: SubmitHandler<ItemBase> = (data) => mutate(data);
+    const { mutate, isLoading } = useMutation({
+        mutationFn: updateItem,
+        onSuccess: () => {
+            navigate('/');
+            queryClient.invalidateQueries(['get-items']);
+        },
+    });
+    const { register, handleSubmit } = useForm<ItemBase>();
+    const onSubmit: SubmitHandler<ItemBase> = (data) =>
+        mutate({ ...data, id: id ?? '' });
+
+    if (isFetching) return <div>Loading...</div>;
+
+    const { name, quantity, buying_price, selling_price } = data ?? {};
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="form-control gap-3">
             <Input
                 {...register('name', { required: true })}
+                defaultValue={name}
                 label="Enter Name"
                 placeholder="Enter Name"
             />
@@ -31,6 +42,7 @@ export const EditItem = () => {
                     required: true,
                     valueAsNumber: true,
                 })}
+                defaultValue={quantity}
                 label="Quantity"
                 placeholder="0"
                 type="number"
@@ -42,6 +54,7 @@ export const EditItem = () => {
                         required: true,
                         valueAsNumber: true,
                     })}
+                    defaultValue={buying_price}
                     label="Buying Price"
                     placeholder="N"
                     type="number"
@@ -51,6 +64,7 @@ export const EditItem = () => {
                         required: true,
                         valueAsNumber: true,
                     })}
+                    defaultValue={selling_price}
                     label="Selling Price"
                     placeholder="N"
                     type="number"
@@ -65,4 +79,3 @@ export const EditItem = () => {
         </form>
     );
 };
-

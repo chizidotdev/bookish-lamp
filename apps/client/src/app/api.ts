@@ -18,10 +18,28 @@ export const getItems = async (): Promise<Item[]> => {
     return data;
 };
 
+export const getItemById = async (id: string): Promise<Item> => {
+    const response = await fetch(`${BASE_URL}/items/${id}`);
+    const data = await response.json();
+    return data;
+};
+
 export const addItem = async (item: ItemBase): Promise<Item> => {
     const response = await fetch(`${BASE_URL}/items`, {
         method: 'POST',
         body: JSON.stringify(item),
+    });
+    const data = await response.json();
+    return data;
+};
+
+export const updateItem = async (
+    item: ItemBase & { id: string }
+): Promise<Item> => {
+    const {id, ...rest} = item;
+    const response = await fetch(`${BASE_URL}/items/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(rest),
     });
     const data = await response.json();
     return data;

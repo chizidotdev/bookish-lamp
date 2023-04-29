@@ -24,7 +24,11 @@ func (h handler) UpdateItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	item = updatedItem
+	item.BuyingPrice = updatedItem.BuyingPrice
+	item.SellingPrice = updatedItem.SellingPrice
+	item.Quantity = updatedItem.Quantity
+	item.Name = updatedItem.Name
+
 	if err := h.DB.Save(&item).Error; err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -42,7 +42,7 @@ func main() {
 		r.Post("/", h.CreateItem)
 
 		r.Route("/{id}", func(r chi.Router) {
-			// r.Get("/", getItemById)
+			r.Get("/", h.GetItem)
 			r.Put("/", h.UpdateItem)
 			r.Delete("/", h.DeleteItem)
 		})
