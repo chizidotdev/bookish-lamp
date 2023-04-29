@@ -10,7 +10,7 @@ export interface HamburgerDropdownProps {
 export const HamburgerDropdown = ({ navItems }: HamburgerDropdownProps) => {
     return (
         <div className="dropdown">
-            <label tabIndex={0} className="btn btn-ghost mr-2 lg:hidden">
+            <label tabIndex={0} className="btn btn-ghost btn-sm mr-2 lg:hidden">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -31,7 +31,7 @@ export const HamburgerDropdown = ({ navItems }: HamburgerDropdownProps) => {
                 className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
             >
                 {navItems.map(({ name, path }) => (
-                    <li>
+                    <li key={path}>
                         <NavLink to={path}>{name}</NavLink>
                     </li>
                 ))}

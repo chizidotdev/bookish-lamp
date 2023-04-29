@@ -10,7 +10,7 @@ export interface NavbarProps {
 
 export const Navbar = ({ navItems }: NavbarProps) => {
     return (
-        <nav className="navbar bg-base-100">
+        <nav className="navbar bg-base-100 px-0">
             <div className="navbar-start">
                 <HamburgerDropdown navItems={navItems} />
                 <NavLink className="normal-case text-xl" to="/">
@@ -21,14 +21,14 @@ export const Navbar = ({ navItems }: NavbarProps) => {
                 <div className="hidden lg:flex">
                     <ul className="menu menu-horizontal px-1">
                         {navItems.map(({ name, path }) => (
-                            <li>
+                            <li key={path}>
                                 <NavLink to={path}>{name}</NavLink>
                             </li>
                         ))}
                     </ul>
                 </div>
-                <NavLink to="/create-sale" className="btn">
-                    Add Sale
+                <NavLink to="/items/create" className="btn btn-sm">
+                    Add Item
                 </NavLink>
             </div>
         </nav>

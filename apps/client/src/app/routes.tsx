@@ -1,6 +1,7 @@
-import { Route, Routes, Link } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { Navbar } from '@copia/ui';
 import { Items } from './items';
+import { CreateItem } from './create-item';
 
 export function RoutesConfig() {
     return (
@@ -8,16 +9,7 @@ export function RoutesConfig() {
             <Navbar navItems={navItems} />
             <Routes>
                 <Route path="/" element={<Items />} />
-                <Route
-                    path="/page-2"
-                    element={
-                        <div>
-                            <Link to="/">
-                                Click here to go back to root page.
-                            </Link>
-                        </div>
-                    }
-                />
+                <Route path="/items/create" element={<CreateItem />} />
             </Routes>
         </>
     );
