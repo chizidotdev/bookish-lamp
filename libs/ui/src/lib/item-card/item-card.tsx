@@ -26,7 +26,7 @@ export function ItemCard({ item }: ItemCardProps) {
                 />
             </figure>*/}
 
-            <div className="card-body flex-row items-center justify-between gap-1 mx-0">
+            <div className="card-body flex-row items-center justify-between gap-1 mx-0 py-5">
                 <div className="flex-1 flex flex-col">
                     <div className="indicator">
                         <span
@@ -36,14 +36,14 @@ export function ItemCard({ item }: ItemCardProps) {
                         >
                             {quantity}
                         </span>
-                        <h2 className="card-title">{name}</h2>
+                        <h2 className="card-title text-lg">{name}</h2>
                     </div>
-                    <div className="flex">
+                    <div className="flex gap-2 mt-1">
                         <div className="badge badge-sm">N{buying_price}</div>
+                        <div className="badge badge-accent badge-sm">N{selling_price}</div>
                     </div>
                 </div>
                 {/*<p>If a dog chews shoes whose shoes does he choose?</p>*/}
-                <div className="font-bold text-xl w-16">N{selling_price}</div>
                 <div className="card-actions flex-row gap-5">
                     <Link to={`/items/edit/${ID}`}>
                         <FaEdit className="text-secondary" />
