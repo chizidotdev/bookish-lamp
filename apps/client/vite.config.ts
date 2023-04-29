@@ -1,27 +1,25 @@
 /// <reference types="vitest" />
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import viteTsConfigPaths from "vite-tsconfig-paths";
-
-const port = Number(process.env.PORT) || 3000;
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import viteTsConfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
-    cacheDir: "../../node_modules/.vite/client",
+    cacheDir: '../../node_modules/.vite/client',
 
     server: {
-        port,
-        host: "localhost",
+        port: Number(process.env.PORT) || 5000,
+        host: process.env.PORT ? '0.0.0.0' : 'localhost',
     },
 
     preview: {
         port: 4300,
-        host: "localhost",
+        host: 'localhost',
     },
 
     plugins: [
         react(),
         viteTsConfigPaths({
-            root: "../../",
+            root: '../../',
         }),
     ],
 
@@ -37,9 +35,9 @@ export default defineConfig({
     test: {
         globals: true,
         cache: {
-            dir: "../../node_modules/.vitest",
+            dir: '../../node_modules/.vitest',
         },
-        environment: "jsdom",
-        include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+        environment: 'jsdom',
+        include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     },
 });
