@@ -57,7 +57,7 @@ export const CreateItem = () => {
             </div>
 
             <div className="mt-5">
-                <Button loading={isLoading} type="submit">
+                <Button variant='primary' loading={isLoading} type="submit">
                     Submit
                 </Button>
             </div>

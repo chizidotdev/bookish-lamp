@@ -1,3 +1,6 @@
+export * from './lib/alert/alert';
+export * from './lib/combobox/combobox';
+export * from './lib/not-found/not-found';
 export * from './lib/input/input';
 export * from './lib/link/link';
 export * from './lib/item-card/item-card';

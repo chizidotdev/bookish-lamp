@@ -25,18 +25,42 @@ func (h handler) CreateSale(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if item.Quantity == 0 {
+		http.Error(w, "Item is out of stock", http.StatusBadRequest)
+		return
+	}
+
+	if item.Quantity < sale.QuantitySold {
+		http.Error(w, "Not enough items in stock", http.StatusBadRequest)
+		return
+	}
+
 	item.Quantity -= sale.QuantitySold
+
+	tx := h.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
 	// Create a new sales history record
 	sale.ItemID = item.ID
 	if err := h.DB.Create(&sale).Error; err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		tx.Rollback()
 		return
 	}
 
 	// Save the item with the new Quantity
 	if err := h.DB.Save(&item).Error; err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		tx.Rollback()
+		return
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

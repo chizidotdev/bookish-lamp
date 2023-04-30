@@ -5,9 +5,22 @@ export type ItemBase = {
     quantity: number;
 };
 
-type Item = ItemBase & {
+export type Item = ItemBase & {
     ID: string;
     CreatedAt: string;
+};
+
+export type SaleBase = {
+    quantity_sold: number;
+    unit_price: number;
+    sale_date: string;
+};
+
+type Sale = SaleBase & {
+    CreatedAt: string;
+    UpdatedAt: string;
+    ID: string;
+    ItemID: string;
 };
 
 const BASE_URL = import.meta.env.VITE_API_URL;
@@ -36,7 +49,7 @@ export const addItem = async (item: ItemBase): Promise<Item> => {
 export const updateItem = async (
     item: ItemBase & { id: string }
 ): Promise<Item> => {
-    const {id, ...rest} = item;
+    const { id, ...rest } = item;
     const response = await fetch(`${BASE_URL}/items/${id}`, {
         method: 'PUT',
         body: JSON.stringify(rest),
@@ -48,6 +61,24 @@ export const updateItem = async (
 export const deleteItem = async (id: string): Promise<string> => {
     const response = await fetch(`${BASE_URL}/items/${id}`, {
         method: 'DELETE',
+    });
+    const data = await response.json();
+    return data;
+};
+
+export const getItemSales = async (id: string): Promise<Sale[]> => {
+    const response = await fetch(`${BASE_URL}/items/${id}/sales`);
+    const data = await response.json();
+    return data;
+};
+
+export const addSale = async (
+    item: SaleBase & { id: string }
+): Promise<Item> => {
+    const { id, ...rest } = item;
+    const response = await fetch(`${BASE_URL}/items/${id}/sales`, {
+        method: 'POST',
+        body: JSON.stringify(rest),
     });
     const data = await response.json();
     return data;

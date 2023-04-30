@@ -12,6 +12,9 @@ export const EditItem = () => {
         queryKey: ['get-item-by-id'],
         queryFn: () => getItemById(id ?? ''),
         refetchOnWindowFocus: false,
+        onError: () => {
+            navigate('/');
+        },
     });
 
     const { mutate, isLoading } = useMutation({
@@ -30,52 +33,61 @@ export const EditItem = () => {
     const { name, quantity, buying_price, selling_price } = data ?? {};
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="form-control gap-3">
-            <Input
-                {...register('name', { required: true })}
-                defaultValue={name}
-                label="Enter Name"
-                placeholder="Enter Name"
-            />
-            <Input
-                {...register('quantity', {
-                    required: true,
-                    valueAsNumber: true,
-                })}
-                defaultValue={quantity}
-                label="Quantity"
-                placeholder="0"
-                type="number"
-            />
-
-            <div className="grid grid-cols-2 gap-3">
+        <>
+            <h1 className="text-2xl font-bold mb-5">Edit {name} Details</h1>
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="form-control gap-3"
+            >
                 <Input
-                    {...register('buying_price', {
+                    {...register('name', { required: true })}
+                    defaultValue={name}
+                    label="Enter Name"
+                    placeholder="Enter Name"
+                />
+                <Input
+                    {...register('quantity', {
                         required: true,
                         valueAsNumber: true,
                     })}
-                    defaultValue={buying_price}
-                    label="Buying Price"
-                    placeholder="N"
+                    defaultValue={quantity}
+                    label="Quantity"
+                    placeholder="0"
                     type="number"
                 />
-                <Input
-                    {...register('selling_price', {
-                        required: true,
-                        valueAsNumber: true,
-                    })}
-                    defaultValue={selling_price}
-                    label="Selling Price"
-                    placeholder="N"
-                    type="number"
-                />
-            </div>
 
-            <div className="mt-5">
-                <Button loading={isLoading} type="submit">
-                    Submit
-                </Button>
-            </div>
-        </form>
+                <div className="grid grid-cols-2 gap-3">
+                    <Input
+                        {...register('buying_price', {
+                            required: true,
+                            valueAsNumber: true,
+                        })}
+                        defaultValue={buying_price}
+                        label="Buying Price"
+                        placeholder="N"
+                        type="number"
+                    />
+                    <Input
+                        {...register('selling_price', {
+                            required: true,
+                            valueAsNumber: true,
+                        })}
+                        defaultValue={selling_price}
+                        label="Selling Price"
+                        placeholder="N"
+                        type="number"
+                    />
+                </div>
+
+                <div className="mt-5 flex gap-3">
+                    <Button variant='primary' loading={isLoading} type="submit">
+                        Submit
+                    </Button>
+                    <Button onClick={()=>navigate(`/sales/create?itemId=${id}`)}>
+                        Add Sale
+                    </Button>
+                </div>
+            </form>
+        </>
     );
 };

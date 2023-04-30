@@ -12,7 +12,7 @@ func (h handler) UpdateItem(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
 	var item models.Item
-	if err := h.DB.First(&item, id).Error; err != nil {
+	if err := h.DB.First(&item, "id = ?", id).Error; err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}

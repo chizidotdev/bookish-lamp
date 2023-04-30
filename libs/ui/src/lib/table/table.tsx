@@ -1,6 +1,8 @@
+import { ComponentProps } from 'react';
+
 /* eslint-disable-next-line */
 export interface TableProps {
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 function TableBody({ children }: TableProps) {
@@ -15,16 +17,23 @@ function TableBodySection({ children }: TableProps) {
     return <tbody>{children}</tbody>;
 }
 
-function TableRow({ children }: TableProps) {
-    return <tr className='hover'>{children}</tr>;
+function TableRow({ children, ...props }: ComponentProps<'tr'> & TableProps) {
+    return (
+        <tr className="hover" {...props}>
+            {children}
+        </tr>
+    );
 }
 
-function TableHead({ children }: TableProps) {
-    return <th>{children}</th>;
+function TableHead({ children, ...props }: ComponentProps<'th'> & TableProps) {
+    return <th className="px-5" {...props}>{children}</th>;
 }
 
-function TableDataCell({ children }: TableProps) {
-    return <td>{children}</td>;
+function TableDataCell({
+    children,
+    ...props
+}: ComponentProps<'td'> & TableProps) {
+    return <td className="px-5" {...props}>{children}</td>;
 }
 
 export const Table = Object.assign(TableBody, {

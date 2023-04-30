@@ -12,6 +12,7 @@ const buttonStyles = cva(['btn'], {
             primary: ['btn-primary'],
             secondary: ['btn-secondary'],
             danger: ['btn-error'],
+            ghost: ['btn-ghost'],
         },
         loading: { true: 'loading' },
         size: {
