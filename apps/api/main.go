@@ -45,12 +45,12 @@ func main() {
 			r.Get("/", h.GetItem)
 			r.Put("/", h.UpdateItem)
 			r.Delete("/", h.DeleteItem)
-		})
-	})
 
-	r.Route("/api/v1/sales", func(r chi.Router) {
-		r.Get("/", h.GetAllSales)
-		// r.Post("/", createSale)
+			r.Route("/sales", func(r chi.Router) {
+				r.Get("/", h.GetSalesHistory)
+				r.Post("/", h.CreateSale)
+			})
+		})
 	})
 
 	port := os.Getenv("PORT")
