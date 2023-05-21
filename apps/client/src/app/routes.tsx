@@ -1,4 +1,5 @@
-import { Route, Routes } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import ErrorPage from './404';
 import { Navbar } from '@copia/ui';
 import { Items } from './items';
 import { CreateItem } from './create-item';
@@ -7,32 +8,40 @@ import { EditItem } from './edit-item';
 import { ItemSales } from './item-sales';
 import { CreateSale } from './create-sale';
 
-export function RoutesConfig() {
-    return (
-        <>
-            <Navbar navItems={navItems} />
-            <div className="my-5">
-            <Routes>
-                <Route path="/" element={<Items />}>
-                    <Route path="items/delete/:id" element={<DeleteItem />} />
-                </Route>
-                <Route path="items/create" element={<CreateItem />} />
-                <Route path="items/edit/:id" element={<EditItem />} />
-                <Route path="items/:id/sales" element={<ItemSales />} />
-                <Route path="sales/create" element={<CreateSale />} />
-            </Routes>
-            </div>
-        </>
-    );
-}
-
-export const navItems = [
+const router = createBrowserRouter([
     {
-        name: 'Items',
         path: '/',
+        element: <Navbar />,
+        errorElement: <ErrorPage />,
+        children: [
+            {
+                index: true,
+                element: <Items />,
+            },
+            {
+                path: 'items/create',
+                element: <CreateItem />,
+            },
+            {
+                path: 'items/edit/:id',
+                element: <EditItem />,
+            },
+            {
+                path: 'items/delete/:id',
+                element: <DeleteItem />,
+            },
+            {
+                path: 'items/:id/sales',
+                element: <ItemSales />,
+            },
+            {
+                path: 'sales/create',
+                element: <CreateSale />,
+            },
+        ],
     },
-    {
-        name: 'Sales',
-        path: '/sales',
-    },
-];
+]);
+
+export function RoutesConfig() {
+    return <RouterProvider router={router} />;
+}

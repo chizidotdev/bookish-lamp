@@ -25,7 +25,7 @@ export const ItemSales = () => {
                 <NotFound>
                     No Sales found for this item...
                     <br />
-                    <Link to="/sales/create">Add Sale</Link>
+                    <Link to={`/sales/create?itemId=${id}`}>Add Sale</Link>
                 </NotFound>
             )}
 

@@ -9,7 +9,7 @@ export const EditItem = () => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { isLoading: isFetching, data } = useQuery({
-        queryKey: ['get-item-by-id'],
+        // queryKey: ['get-item-by-id'],
         queryFn: () => getItemById(id ?? ''),
         refetchOnWindowFocus: false,
         onError: () => {
