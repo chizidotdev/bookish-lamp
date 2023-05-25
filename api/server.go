@@ -1,8 +1,15 @@
 package api
 
 import (
+	"encoding/gob"
+	"log"
+
+	"github.com/chizidotdev/copia/auth"
 	db "github.com/chizidotdev/copia/db/sqlc"
 	"github.com/gin-gonic/gin"
+
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 )
 
 // Server serves HTTP requests for the service
@@ -15,6 +22,18 @@ type Server struct {
 func NewServer(store db.Store) *Server {
 	server := &Server{store: store}
 	router := gin.Default()
+
+	auth, err := auth.New()
+	if err != nil {
+		log.Fatal("Cannot create authenticator:", err)
+	}
+
+	gob.Register(map[string]interface{}{})
+	cookieStore := cookie.NewStore([]byte("secret"))
+	router.Use(sessions.Sessions("auth-session", cookieStore))
+
+	router.GET("/login", server.Login(auth))
+	router.GET("/callback", server.Callback(auth))
 
 	router.POST("/items", server.createItem)
 	router.GET("/items", server.listItems)
