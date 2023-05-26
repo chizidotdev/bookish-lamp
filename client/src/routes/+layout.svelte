@@ -9,7 +9,7 @@
 <div class="bg-base-200">
 	<Nav />
 
-	<div class="">
+	<div class="container mx-auto px-2 sm:px-5">
 		<slot />
 	</div>
 	<Footer />
