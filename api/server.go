@@ -8,6 +8,7 @@ import (
 	db "github.com/chizidotdev/copia/db/sqlc"
 	"github.com/gin-gonic/gin"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 )
@@ -31,6 +32,9 @@ func NewServer(store db.Store) *Server {
 	gob.Register(map[string]interface{}{})
 	cookieStore := cookie.NewStore([]byte("secret"))
 	router.Use(sessions.Sessions("auth-session", cookieStore))
+	// config := cors.DefaultConfig()
+	// config.AllowOrigins = []string{"http://google.com"}
+	router.Use(cors.Default())
 
 	router.GET("/login", server.Login(auth))
 	router.GET("/callback", server.Callback(auth))
