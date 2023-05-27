@@ -12,9 +12,9 @@ export default async function Items() {
                 {items && items.map((item) => <ItemCard key={item.ID} item={item} />)}
             </div>
 
-            <div className='btn-group'>
+            <div className='mt-5 flex justify-end btn-group'>
                 <button className='btn'>«</button>
-                <button className='btn'>Page 22</button>
+                <button className='btn'>Page 1</button>
                 <button className='btn'>»</button>
             </div>
         </>

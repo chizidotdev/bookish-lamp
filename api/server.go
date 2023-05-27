@@ -6,6 +6,7 @@ import (
 
 	"github.com/chizidotdev/copia/auth"
 	db "github.com/chizidotdev/copia/db/sqlc"
+	"github.com/chizidotdev/copia/middleware"
 	"github.com/gin-gonic/gin"
 
 	"github.com/gin-contrib/cors"
@@ -36,11 +37,13 @@ func NewServer(store db.Store) *Server {
 	// config.AllowOrigins = []string{"http://google.com"}
 	router.Use(cors.Default())
 
-	router.GET("/login", server.Login(auth))
-	router.GET("/callback", server.Callback(auth))
+	router.GET("/login", server.login(auth))
+	router.GET("/callback", server.callback(auth))
+	router.GET("/logout", server.logout)
+	router.GET("/user", server.getUser)
 
 	router.POST("/items", server.createItem)
-	router.GET("/items", server.listItems)
+	router.GET("/items", middleware.IsAuthenticated, server.listItems)
 	router.GET("/items/:id", server.getItem)
 
 	router.PATCH("/items", server.updateItem)

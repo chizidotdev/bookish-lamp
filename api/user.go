@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserHandler(ctx *gin.Context) {
+func (server *Server) getUser(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 	profile := session.Get("profile")
 

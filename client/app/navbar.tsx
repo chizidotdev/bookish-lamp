@@ -1,14 +1,19 @@
 import Link from 'next/link';
 import React from 'react';
 import { CgMenuLeft } from 'react-icons/cg';
+import { getUser, logout } from '~api/user';
 
 const navbarItems = [
+    { title: 'Items', href: '/items' },
     { title: 'Product', href: '/product' },
     { title: 'Company', href: '/company' },
     { title: 'Pricing', href: '/pricing' },
 ];
 
-export default function Navbar() {
+export default async function Navbar() {
+    const user = await getUser();
+    console.log(user)
+
     return (
         <div className='bg-base-100 z-10'>
             <div className='navbar container mx-auto'>
@@ -43,6 +48,9 @@ export default function Navbar() {
                     </ul>
                 </div>
                 <div className='navbar-end gap-2'>
+                    <a href='http://localhost:8080/logout' className='btn btn-primary btn-outline'>
+                        Logout
+                    </a>
                     <a href='http://localhost:8080/login' className='btn btn-outline'>
                         Login
                     </a>

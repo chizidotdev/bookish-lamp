@@ -1,6 +1,5 @@
+import { BASE_URL } from '~lib/constants';
 import type { Item, ItemBase } from '~lib/models';
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const getItems = async (): Promise<Item[]> => {
     const response = await fetch(`${BASE_URL}/items?page_id=1&page_size=5`);
