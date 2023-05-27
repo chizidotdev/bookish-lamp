@@ -6,7 +6,6 @@ import (
 
 	"github.com/chizidotdev/copia/auth"
 	db "github.com/chizidotdev/copia/db/sqlc"
-	"github.com/chizidotdev/copia/middleware"
 	"github.com/gin-gonic/gin"
 
 	"github.com/gin-contrib/cors"
@@ -43,7 +42,7 @@ func NewServer(store db.Store) *Server {
 	router.GET("/user", server.getUser)
 
 	router.POST("/items", server.createItem)
-	router.GET("/items", middleware.IsAuthenticated, server.listItems)
+	router.GET("/items", server.listItems)
 	router.GET("/items/:id", server.getItem)
 
 	router.PATCH("/items", server.updateItem)
