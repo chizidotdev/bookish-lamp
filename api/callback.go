@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (server *Server) Callback(auth *auth.Authenticator) gin.HandlerFunc {
+func (server *Server) callback(auth *auth.Authenticator) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		session := sessions.Default(ctx)
 
@@ -42,6 +42,6 @@ func (server *Server) Callback(auth *auth.Authenticator) gin.HandlerFunc {
 			return
 		}
 
-		ctx.Redirect(http.StatusTemporaryRedirect, "/items?page_id=1&page_size=15")
+		ctx.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/items")
 	}
 }

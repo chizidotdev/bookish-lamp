@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (server *Server) Login(auth *auth.Authenticator) gin.HandlerFunc {
+func (server *Server) login(auth *auth.Authenticator) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		state, err := generateRandomState()
 		if err != nil {
