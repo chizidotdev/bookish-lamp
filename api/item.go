@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	db "github.com/chizidotdev/copia/db/sqlc"
+	"github.com/chizidotdev/copia/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -19,14 +20,14 @@ type createItemRequest struct {
 func (server *Server) createItem(ctx *gin.Context) {
 	var req createItemRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
 	arg := db.CreateItemParams(req)
 	item, err := server.store.CreateItem(ctx, arg)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
 	}
 
 	ctx.JSON(http.StatusOK, item)
@@ -39,18 +40,18 @@ type getItemRequest struct {
 func (server *Server) getItem(ctx *gin.Context) {
 	var req getItemRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
 	item, err := server.store.GetItem(ctx, req.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			ctx.JSON(http.StatusNotFound, utils.ErrorResponse(err))
 			return
 		}
 
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
 		return
 	}
 
@@ -65,7 +66,7 @@ type listItemRequest struct {
 func (server *Server) listItems(ctx *gin.Context) {
 	var req listItemRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
@@ -76,7 +77,7 @@ func (server *Server) listItems(ctx *gin.Context) {
 
 	items, err := server.store.ListItems(ctx, arg)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
 		return
 	}
 
@@ -94,14 +95,14 @@ type updateItemRequest struct {
 func (server *Server) updateItem(ctx *gin.Context) {
 	var req updateItemRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
 	arg := db.UpdateItemParams(req)
 	item, err := server.store.UpdateItem(ctx, arg)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
 	}
 
 	ctx.JSON(http.StatusOK, item)
@@ -114,13 +115,13 @@ type deleteItemRequest struct {
 func (server *Server) deleteItem(ctx *gin.Context) {
 	var req deleteItemRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
 	err := server.store.DeleteItem(ctx, req.ID)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
 		return
 	}
 

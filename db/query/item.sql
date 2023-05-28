@@ -17,9 +17,9 @@ FOR NO KEY UPDATE;
 
 -- name: ListItems :many
 SELECT * FROM items
+WHERE user_id = $1
 ORDER BY id
-LIMIT $1
-OFFSET $2;
+LIMIT $2 OFFSET $3;
 
 -- name: UpdateItem :one
 UPDATE items 
