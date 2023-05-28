@@ -17,7 +17,7 @@ INSERT INTO items (
 ) VALUES (
     $1, $2, $3, $4
 )
-RETURNING id, title, buying_price, selling_price, quantity, created_at
+RETURNING id, title, buying_price, selling_price, quantity, user_id, created_at
 `
 
 type CreateItemParams struct {
@@ -41,6 +41,7 @@ func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, e
 		&i.BuyingPrice,
 		&i.SellingPrice,
 		&i.Quantity,
+		&i.UserID,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -56,7 +57,7 @@ func (q *Queries) DeleteItem(ctx context.Context, id uuid.UUID) error {
 }
 
 const getItem = `-- name: GetItem :one
-SELECT id, title, buying_price, selling_price, quantity, created_at FROM items
+SELECT id, title, buying_price, selling_price, quantity, user_id, created_at FROM items
 WHERE id = $1 LIMIT 1
 `
 
@@ -69,13 +70,14 @@ func (q *Queries) GetItem(ctx context.Context, id uuid.UUID) (Item, error) {
 		&i.BuyingPrice,
 		&i.SellingPrice,
 		&i.Quantity,
+		&i.UserID,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getItemForUpdate = `-- name: GetItemForUpdate :one
-SELECT id, title, buying_price, selling_price, quantity, created_at FROM items
+SELECT id, title, buying_price, selling_price, quantity, user_id, created_at FROM items
 WHERE id = $1 LIMIT 1
 FOR NO KEY UPDATE
 `
@@ -89,25 +91,27 @@ func (q *Queries) GetItemForUpdate(ctx context.Context, id uuid.UUID) (Item, err
 		&i.BuyingPrice,
 		&i.SellingPrice,
 		&i.Quantity,
+		&i.UserID,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const listItems = `-- name: ListItems :many
-SELECT id, title, buying_price, selling_price, quantity, created_at FROM items
+SELECT id, title, buying_price, selling_price, quantity, user_id, created_at FROM items
+WHERE user_id = $1
 ORDER BY id
-LIMIT $1
-OFFSET $2
+LIMIT $2 OFFSET $3
 `
 
 type ListItemsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UserID uuid.UUID `json:"user_id"`
+	Limit  int32     `json:"limit"`
+	Offset int32     `json:"offset"`
 }
 
 func (q *Queries) ListItems(ctx context.Context, arg ListItemsParams) ([]Item, error) {
-	rows, err := q.db.QueryContext(ctx, listItems, arg.Limit, arg.Offset)
+	rows, err := q.db.QueryContext(ctx, listItems, arg.UserID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -121,6 +125,7 @@ func (q *Queries) ListItems(ctx context.Context, arg ListItemsParams) ([]Item, e
 			&i.BuyingPrice,
 			&i.SellingPrice,
 			&i.Quantity,
+			&i.UserID,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -140,7 +145,7 @@ const updateItem = `-- name: UpdateItem :one
 UPDATE items 
 SET title = $2, buying_price = $3, selling_price = $4, quantity = $5
 WHERE id = $1
-RETURNING id, title, buying_price, selling_price, quantity, created_at
+RETURNING id, title, buying_price, selling_price, quantity, user_id, created_at
 `
 
 type UpdateItemParams struct {
@@ -166,6 +171,7 @@ func (q *Queries) UpdateItem(ctx context.Context, arg UpdateItemParams) (Item, e
 		&i.BuyingPrice,
 		&i.SellingPrice,
 		&i.Quantity,
+		&i.UserID,
 		&i.CreatedAt,
 	)
 	return i, err

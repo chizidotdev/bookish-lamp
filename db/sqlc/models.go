@@ -16,5 +16,14 @@ type Item struct {
 	BuyingPrice  float32   `json:"buying_price"`
 	SellingPrice float32   `json:"selling_price"`
 	Quantity     int64     `json:"quantity"`
+	UserID       uuid.UUID `json:"user_id"`
 	CreatedAt    time.Time `json:"created_at"`
+}
+
+type User struct {
+	ID                uuid.UUID `json:"id"`
+	Email             string    `json:"email"`
+	Password          string    `json:"password"`
+	PasswordChangedAt time.Time `json:"password_changed_at"`
+	CreatedAt         time.Time `json:"created_at"`
 }
