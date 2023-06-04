@@ -12,12 +12,13 @@ import (
 
 type Querier interface {
 	CreateItem(ctx context.Context, arg CreateItemParams) (Item, error)
-	CreateUser(ctx context.Context, arg CreateUserParams) error
-	DeleteItem(ctx context.Context, id uuid.UUID) error
+	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DeleteItem(ctx context.Context, arg DeleteItemParams) error
 	GetItem(ctx context.Context, id uuid.UUID) (Item, error)
 	GetItemForUpdate(ctx context.Context, id uuid.UUID) (Item, error)
 	GetUser(ctx context.Context, email string) (User, error)
 	ListItems(ctx context.Context, arg ListItemsParams) ([]Item, error)
+	ListUsers(ctx context.Context) ([]User, error)
 	UpdateItem(ctx context.Context, arg UpdateItemParams) (Item, error)
 }
 

@@ -22,6 +22,9 @@ test:
 server:
 	go run main.go
 
+www:
+	npm --prefix client run dev
+
 mock:
 	mockgen -package mockdb -destination db/mock/store.go github.com/chizidotdev/copia/db/sqlc Store
 

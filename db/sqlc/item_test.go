@@ -6,11 +6,13 @@ import (
 	"time"
 
 	"github.com/chizidotdev/copia/utils"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
-func createRandomItem(t *testing.T) Item {
+func createRandomItem(t *testing.T, userId uuid.UUID) Item {
 	arg := CreateItemParams{
+		UserID:       userId,
 		Title:        utils.RandomTitle(),
 		BuyingPrice:  utils.RandomMoney(),
 		SellingPrice: utils.RandomMoney(),
@@ -32,11 +34,13 @@ func createRandomItem(t *testing.T) Item {
 }
 
 func TestCreateItem(t *testing.T) {
-	createRandomItem(t)
+	user := createRandomUser(t)
+	createRandomItem(t, user.ID)
 }
 
 func TestGetItem(t *testing.T) {
-	createdItem := createRandomItem(t)
+	user := createRandomUser(t)
+	createdItem := createRandomItem(t, user.ID)
 	item, err := testQueries.GetItem(context.Background(), createdItem.ID)
 
 	require.NoError(t, err)
@@ -52,7 +56,8 @@ func TestGetItem(t *testing.T) {
 }
 
 func TestUpdateItem(t *testing.T) {
-	item := createRandomItem(t)
+	user := createRandomUser(t)
+	item := createRandomItem(t, user.ID)
 	arg := UpdateItemParams{
 		ID:       item.ID,
 		Quantity: utils.RandomQuantity(),
@@ -67,7 +72,8 @@ func TestUpdateItem(t *testing.T) {
 }
 
 func TestDeleteItem(t *testing.T) {
-	item := createRandomItem(t)
+	user := createRandomUser(t)
+	item := createRandomItem(t, user.ID)
 	err := testQueries.DeleteItem(context.Background(), item.ID)
 	require.NoError(t, err)
 
@@ -77,11 +83,13 @@ func TestDeleteItem(t *testing.T) {
 }
 
 func TestListItems(t *testing.T) {
+	user := createRandomUser(t)
 	for i := 0; i < 5; i++ {
-		createRandomItem(t)
+		createRandomItem(t, user.ID)
 	}
 
 	arg := ListItemsParams{
+		UserID: user.ID,
 		Limit:  4,
 		Offset: 0,
 	}

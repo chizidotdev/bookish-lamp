@@ -16,16 +16,26 @@ type userRequest struct {
 	Password string `json:"password"`
 }
 
+func (server *Server) listUsers(ctx *gin.Context) {
+	users, err := server.store.ListUsers(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, users)
+}
+
 func (server *Server) signup(ctx *gin.Context) {
 	var req userRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
 		return
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), 10)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
 		return
 	}
 	arg := db.CreateUserParams{
@@ -33,9 +43,9 @@ func (server *Server) signup(ctx *gin.Context) {
 		Password: string(hashedPassword),
 	}
 
-	err = server.store.CreateUser(ctx, arg)
+	_, err = server.store.CreateUser(ctx, arg)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
 		return
 	}
 
@@ -45,19 +55,19 @@ func (server *Server) signup(ctx *gin.Context) {
 func (server *Server) login(ctx *gin.Context) {
 	var req userRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
 		return
 	}
 
 	user, err := server.store.GetUser(ctx, req.Email)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
 		return
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusUnauthorized, utils.ErrorResponse(err.Error()))
 		return
 	}
 
@@ -68,7 +78,7 @@ func (server *Server) login(ctx *gin.Context) {
 
 	tokenString, err := token.SignedString([]byte(utils.EnvVars.AuthSecret))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
 		return
 	}
 
@@ -85,7 +95,11 @@ func (server *Server) logout(ctx *gin.Context) {
 }
 
 func (server *Server) validateToken(ctx *gin.Context) {
-	user, _ := ctx.Get("user")
+	user, exists := ctx.Get("user")
+	if exists == false {
+		ctx.JSON(http.StatusUnauthorized, utils.ErrorResponse("Unauthorized"))
+		return
+	}
 
 	ctx.JSON(http.StatusOK, user)
 }

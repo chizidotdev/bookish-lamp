@@ -1,8 +1,8 @@
 -- name: CreateItem :one
 INSERT INTO items (
-    title, buying_price, selling_price, quantity
+    user_id, title, buying_price, selling_price, quantity
 ) VALUES (
-    $1, $2, $3, $4
+    $1, $2, $3, $4, $5
 )
 RETURNING *;
 
@@ -23,10 +23,12 @@ LIMIT $2 OFFSET $3;
 
 -- name: UpdateItem :one
 UPDATE items 
-SET title = $2, buying_price = $3, selling_price = $4, quantity = $5
-WHERE id = $1
+SET title = $2,
+buying_price = $3,
+selling_price = $4,
+quantity = $5
+WHERE (id = $1 AND user_id = $6)
 RETURNING *;
 
 -- name: DeleteItem :exec
-DELETE FROM items WHERE id = $1;
-
+DELETE FROM items WHERE (id = $1 AND user_id = $2);
