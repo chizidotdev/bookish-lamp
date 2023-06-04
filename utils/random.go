@@ -43,3 +43,13 @@ func RandomMoney() float32 {
 func RandomQuantity() int64 {
 	return RandomInt(0, 20)
 }
+
+// RandomEmail generates a random email
+func RandomEmail() string {
+	return RandomString(6) + "@email.com"
+}
+
+// RandomPassword generates a random password
+func RandomPassword() string {
+	return RandomString(6)
+}

@@ -13,22 +13,24 @@ import (
 
 const createItem = `-- name: CreateItem :one
 INSERT INTO items (
-    title, buying_price, selling_price, quantity
+    user_id, title, buying_price, selling_price, quantity
 ) VALUES (
-    $1, $2, $3, $4
+    $1, $2, $3, $4, $5
 )
 RETURNING id, title, buying_price, selling_price, quantity, user_id, created_at
 `
 
 type CreateItemParams struct {
-	Title        string  `json:"title"`
-	BuyingPrice  float32 `json:"buying_price"`
-	SellingPrice float32 `json:"selling_price"`
-	Quantity     int64   `json:"quantity"`
+	UserID       uuid.UUID `json:"user_id"`
+	Title        string    `json:"title"`
+	BuyingPrice  float32   `json:"buying_price"`
+	SellingPrice float32   `json:"selling_price"`
+	Quantity     int64     `json:"quantity"`
 }
 
 func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, error) {
 	row := q.db.QueryRowContext(ctx, createItem,
+		arg.UserID,
 		arg.Title,
 		arg.BuyingPrice,
 		arg.SellingPrice,

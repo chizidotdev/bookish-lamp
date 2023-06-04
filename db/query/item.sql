@@ -1,8 +1,8 @@
 -- name: CreateItem :one
 INSERT INTO items (
-    title, buying_price, selling_price, quantity
+    user_id, title, buying_price, selling_price, quantity
 ) VALUES (
-    $1, $2, $3, $4
+    $1, $2, $3, $4, $5
 )
 RETURNING *;
 
