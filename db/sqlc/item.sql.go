@@ -50,11 +50,16 @@ func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, e
 }
 
 const deleteItem = `-- name: DeleteItem :exec
-DELETE FROM items WHERE id = $1
+DELETE FROM items WHERE (id = $1 AND user_id = $2)
 `
 
-func (q *Queries) DeleteItem(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, deleteItem, id)
+type DeleteItemParams struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"user_id"`
+}
+
+func (q *Queries) DeleteItem(ctx context.Context, arg DeleteItemParams) error {
+	_, err := q.db.ExecContext(ctx, deleteItem, arg.ID, arg.UserID)
 	return err
 }
 
@@ -145,8 +150,11 @@ func (q *Queries) ListItems(ctx context.Context, arg ListItemsParams) ([]Item, e
 
 const updateItem = `-- name: UpdateItem :one
 UPDATE items 
-SET title = $2, buying_price = $3, selling_price = $4, quantity = $5
-WHERE id = $1
+SET title = $2,
+buying_price = $3,
+selling_price = $4,
+quantity = $5
+WHERE (id = $1 AND user_id = $6)
 RETURNING id, title, buying_price, selling_price, quantity, user_id, created_at
 `
 
@@ -156,6 +164,7 @@ type UpdateItemParams struct {
 	BuyingPrice  float32   `json:"buying_price"`
 	SellingPrice float32   `json:"selling_price"`
 	Quantity     int64     `json:"quantity"`
+	UserID       uuid.UUID `json:"user_id"`
 }
 
 func (q *Queries) UpdateItem(ctx context.Context, arg UpdateItemParams) (Item, error) {
@@ -165,6 +174,7 @@ func (q *Queries) UpdateItem(ctx context.Context, arg UpdateItemParams) (Item, e
 		arg.BuyingPrice,
 		arg.SellingPrice,
 		arg.Quantity,
+		arg.UserID,
 	)
 	var i Item
 	err := row.Scan(

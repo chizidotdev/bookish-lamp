@@ -20,38 +20,45 @@ type createItemRequest struct {
 func (server *Server) createItem(ctx *gin.Context) {
 	var req createItemRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
 		return
 	}
 
-	arg := db.CreateItemParams(req)
+	user := ctx.MustGet("user").(userJWT)
+
+	arg := db.CreateItemParams{
+		Title:        req.Title,
+		BuyingPrice:  req.BuyingPrice,
+		SellingPrice: req.SellingPrice,
+		Quantity:     req.Quantity,
+		UserID:       user.ID,
+	}
+
 	item, err := server.store.CreateItem(ctx, arg)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
+		return
 	}
 
 	ctx.JSON(http.StatusOK, item)
 }
 
-type getItemRequest struct {
-	ID uuid.UUID `uri:"id" binding:"required"`
-}
-
 func (server *Server) getItem(ctx *gin.Context) {
-	var req getItemRequest
-	if err := ctx.ShouldBindUri(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+	idParam := ctx.Params.ByName("id")
+	itemID, err := uuid.Parse(idParam)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
 		return
 	}
 
-	item, err := server.store.GetItem(ctx, req.ID)
+	item, err := server.store.GetItem(ctx, itemID)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, utils.ErrorResponse(err))
+			ctx.JSON(http.StatusNotFound, utils.ErrorResponse(err.Error()))
 			return
 		}
 
-		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
 		return
 	}
 
@@ -66,18 +73,21 @@ type listItemRequest struct {
 func (server *Server) listItems(ctx *gin.Context) {
 	var req listItemRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
 		return
 	}
 
+	user := ctx.MustGet("user").(userJWT)
+
 	arg := db.ListItemsParams{
+		UserID: user.ID,
 		Limit:  req.PageSize,
 		Offset: (req.PageID - 1) * req.PageSize,
 	}
 
 	items, err := server.store.ListItems(ctx, arg)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
 		return
 	}
 
@@ -85,43 +95,63 @@ func (server *Server) listItems(ctx *gin.Context) {
 }
 
 type updateItemRequest struct {
-	ID           uuid.UUID `uri:"id" binding:"required"`
-	Title        string    `json:"title" binding:"required"`
-	BuyingPrice  float32   `json:"buying_price" binding:"required"`
-	SellingPrice float32   `json:"selling_price" binding:"required"`
-	Quantity     int64     `json:"quantity" binding:"required,min=0"`
+	Title        string  `json:"title" binding:"required"`
+	BuyingPrice  float32 `json:"buying_price" binding:"required"`
+	SellingPrice float32 `json:"selling_price" binding:"required"`
+	Quantity     int64   `json:"quantity" binding:"required,min=0"`
 }
 
 func (server *Server) updateItem(ctx *gin.Context) {
 	var req updateItemRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
 		return
 	}
 
-	arg := db.UpdateItemParams(req)
+	idParam := ctx.Params.ByName("id")
+	itemID, err := uuid.Parse(idParam)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
+		return
+	}
+
+	user := ctx.MustGet("user").(userJWT)
+
+	arg := db.UpdateItemParams{
+		ID:           itemID,
+		Title:        req.Title,
+		BuyingPrice:  req.BuyingPrice,
+		SellingPrice: req.SellingPrice,
+		Quantity:     req.Quantity,
+		UserID:       user.ID,
+	}
+
 	item, err := server.store.UpdateItem(ctx, arg)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
 	}
 
 	ctx.JSON(http.StatusOK, item)
 }
 
-type deleteItemRequest struct {
-	ID uuid.UUID `uri:"id" binding:"required"`
-}
-
 func (server *Server) deleteItem(ctx *gin.Context) {
-	var req deleteItemRequest
-	if err := ctx.ShouldBindUri(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+	idParam := ctx.Params.ByName("id")
+	itemID, err := uuid.Parse(idParam)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
 		return
 	}
 
-	err := server.store.DeleteItem(ctx, req.ID)
+	user := ctx.MustGet("user").(userJWT)
+
+	arg := db.DeleteItemParams{
+		ID:     itemID,
+		UserID: user.ID,
+	}
+
+	err = server.store.DeleteItem(ctx, arg)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
 		return
 	}
 

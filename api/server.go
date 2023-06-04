@@ -33,15 +33,13 @@ func NewServer(store db.Store) *Server {
 	router.POST("/login", server.login)
 	router.GET("/logout", server.logout)
 	router.GET("/users", server.listUsers)
-	// router.GET("/users", server.isAuthenticated, server.listItems)
 	router.GET("/validateToken", server.isAuthenticated, server.validateToken)
 
 	router.POST("/items", server.isAuthenticated, server.createItem)
 	router.GET("/items", server.isAuthenticated, server.listItems)
-	router.GET("/items/:id", server.getItem)
-
-	router.PATCH("/items", server.updateItem)
-	router.DELETE("/items/:id", server.deleteItem)
+	router.GET("/items/:id", server.isAuthenticated, server.getItem)
+	router.PUT("/items/:id", server.isAuthenticated, server.updateItem)
+	router.DELETE("/items/:id", server.isAuthenticated, server.deleteItem)
 
 	server.router = router
 	return server

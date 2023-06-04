@@ -23,10 +23,12 @@ LIMIT $2 OFFSET $3;
 
 -- name: UpdateItem :one
 UPDATE items 
-SET title = $2, buying_price = $3, selling_price = $4, quantity = $5
-WHERE id = $1
+SET title = $2,
+buying_price = $3,
+selling_price = $4,
+quantity = $5
+WHERE (id = $1 AND user_id = $6)
 RETURNING *;
 
 -- name: DeleteItem :exec
-DELETE FROM items WHERE id = $1;
-
+DELETE FROM items WHERE (id = $1 AND user_id = $2);
