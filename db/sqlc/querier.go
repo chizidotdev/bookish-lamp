@@ -18,6 +18,7 @@ type Querier interface {
 	GetItemForUpdate(ctx context.Context, id uuid.UUID) (Item, error)
 	GetUser(ctx context.Context, email string) (User, error)
 	ListItems(ctx context.Context, arg ListItemsParams) ([]Item, error)
+	ListUsers(ctx context.Context) ([]User, error)
 	UpdateItem(ctx context.Context, arg UpdateItemParams) (Item, error)
 }
 

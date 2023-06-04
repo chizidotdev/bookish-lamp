@@ -16,6 +16,16 @@ type userRequest struct {
 	Password string `json:"password"`
 }
 
+func (server *Server) listUsers(ctx *gin.Context) {
+	users, err := server.store.ListUsers(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, users)
+}
+
 func (server *Server) signup(ctx *gin.Context) {
 	var req userRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {

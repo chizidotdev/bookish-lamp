@@ -31,7 +31,9 @@ func NewServer(store db.Store) *Server {
 
 	router.POST("/signup", server.signup)
 	router.POST("/login", server.login)
-	// router.GET("/logout", server.logout)
+	router.GET("/logout", server.logout)
+	router.GET("/users", server.listUsers)
+	// router.GET("/users", server.isAuthenticated, server.listItems)
 	router.GET("/validateToken", server.isAuthenticated, server.validateToken)
 
 	router.POST("/items", server.isAuthenticated, server.createItem)
