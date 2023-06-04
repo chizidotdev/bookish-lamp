@@ -11,8 +11,8 @@ const navbarItems = [
 ];
 
 export default async function Navbar() {
-    // const user = await getUser();
-    // console.log(user)
+    const user = await getUser();
+    console.log(user)
 
     return (
         <div className='bg-base-100 z-10'>

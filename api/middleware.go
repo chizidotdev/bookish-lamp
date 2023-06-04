@@ -18,7 +18,7 @@ type userJWT struct {
 func (server *Server) isAuthenticated(ctx *gin.Context) {
 	cookie, err := ctx.Cookie("Authorization")
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, utils.ErrorResponse(err.Error()))
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err.Error()))
 		return
 	}
 
@@ -26,19 +26,19 @@ func (server *Server) isAuthenticated(ctx *gin.Context) {
 		return []byte(utils.EnvVars.AuthSecret), nil
 	})
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, utils.ErrorResponse(err.Error()))
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err.Error()))
 		return
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		if float64(time.Now().Unix()) > claims["exp"].(float64) {
-			ctx.JSON(http.StatusUnauthorized, utils.ErrorResponse(err.Error()))
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err.Error()))
 			return
 		}
 
 		user, err := server.store.GetUser(ctx, claims["sub"].(string))
 		if err != nil {
-			ctx.JSON(http.StatusUnauthorized, utils.ErrorResponse(err.Error()))
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err.Error()))
 			return
 		}
 
@@ -48,6 +48,6 @@ func (server *Server) isAuthenticated(ctx *gin.Context) {
 		})
 		ctx.Next()
 	} else {
-		ctx.JSON(http.StatusUnauthorized, utils.ErrorResponse(err.Error()))
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err.Error()))
 	}
 }

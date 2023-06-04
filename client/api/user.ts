@@ -1,7 +1,7 @@
 import { BASE_URL } from "~lib/constants";
 
 export const getUser = async (): Promise<any> => {
-    const response = await fetch(`${BASE_URL}/user`);
+    const response = await fetch(`${BASE_URL}/validateToken`);
     const data = await response.json();
     return data;
 };
