@@ -1,6 +1,7 @@
 import './globals.css';
 import { Balsamiq_Sans } from 'next/font/google';
 import Navbar from './navbar';
+import { QueryClientWrapper } from './query-client';
 
 const balsamiq = Balsamiq_Sans({
     weight: ['400', '700'],
@@ -17,8 +18,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     return (
         <html lang='en'>
             <body className={`${balsamiq.variable} font-balsamiq`}>
-                <Navbar />
-                <main className='container mx-auto p-5 min-h-screen'>{children}</main>
+                <QueryClientWrapper>
+                    <Navbar />
+                    <main className='min-h-screen py-20'>{children}</main>
+                </QueryClientWrapper>
             </body>
         </html>
     );

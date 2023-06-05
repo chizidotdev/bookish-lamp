@@ -1,14 +1,12 @@
 package api
 
 import (
-	"encoding/gob"
+	"time"
 
 	db "github.com/chizidotdev/copia/db/sqlc"
 	"github.com/gin-gonic/gin"
 
 	"github.com/gin-contrib/cors"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
 )
 
 // Server serves HTTP requests for the service
@@ -22,12 +20,14 @@ func NewServer(store db.Store) *Server {
 	server := &Server{store: store}
 	router := gin.Default()
 
-	gob.Register(map[string]interface{}{})
-	cookieStore := cookie.NewStore([]byte("secret"))
-	router.Use(sessions.Sessions("auth-session", cookieStore))
-	// config := cors.DefaultConfig()
-	// config.AllowOrigins = []string{"http://google.com"}
-	router.Use(cors.Default())
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"PUT", "POST", "GET", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	router.POST("/signup", server.signup)
 	router.POST("/login", server.login)

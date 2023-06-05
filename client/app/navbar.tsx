@@ -1,7 +1,10 @@
+'use client';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import React from 'react';
 import { CgMenuLeft } from 'react-icons/cg';
-import { getUser, logout } from '~api/user';
+import { useQuery } from 'react-query';
+import { getUser } from '~api/user';
 
 const navbarItems = [
     { title: 'Items', href: '/items' },
@@ -10,12 +13,18 @@ const navbarItems = [
     { title: 'Pricing', href: '/pricing' },
 ];
 
-export default async function Navbar() {
-    const user = await getUser();
-    console.log(user)
+export default function Navbar() {
+    const pathname = usePathname();
+    const { data: user } = useQuery('user', {
+        queryFn: getUser,
+        refetchOnWindowFocus: false,
+    });
+    console.log('user ==== ', user);
+
+    if (pathname === '/auth/login' || pathname === '/auth/signup') return null;
 
     return (
-        <div className='bg-base-100 z-10'>
+        <nav className='fixed top-0 w-full bg-base-100 z-10'>
             <div className='navbar container mx-auto'>
                 <div className='navbar-start'>
                     <div className='dropdown'>
@@ -48,17 +57,17 @@ export default async function Navbar() {
                     </ul>
                 </div>
                 <div className='navbar-end gap-2'>
-                    <a href='http://localhost:8080/logout' className='btn btn-primary btn-outline'>
+                    <a href='/auth/logout' className='btn btn-primary btn-outline'>
                         Logout
                     </a>
-                    <a href='http://localhost:8080/login' className='btn btn-outline'>
+                    <a href='/auth/login' className='btn btn-outline'>
                         Login
                     </a>
-                    <Link href='signup' className='btn'>
+                    <Link href='/auth/signup' className='btn'>
                         Get started
                     </Link>
                 </div>
             </div>
-        </div>
+        </nav>
     );
 }

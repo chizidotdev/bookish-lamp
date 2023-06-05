@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -17,6 +18,8 @@ type userJWT struct {
 
 func (server *Server) isAuthenticated(ctx *gin.Context) {
 	cookie, err := ctx.Cookie("Authorization")
+	fmt.Printf("Cookie :=>>>>> %s", cookie)
+
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse(err.Error()))
 		return
