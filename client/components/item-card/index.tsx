@@ -1,8 +1,8 @@
-'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FaTrash, FaEdit } from 'react-icons/fa';
-import type { Item } from '~lib/models';
+import { IoMdTrash } from 'react-icons/io';
+import { FiEdit } from 'react-icons/fi';
+import type { Item } from '~lib/types';
 
 export type ItemCardProps = {
     item: Item;
@@ -35,11 +35,11 @@ export function ItemCard({ item }: ItemCardProps) {
                     </div>
                 </div>
                 <div className='card-actions flex-row gap-5'>
-                    <Link href={`/items/edit/${ID}`}>
-                        <FaEdit className='text-primary' />
+                    <Link href={`/items/${ID}`}>
+                        <FiEdit className='text-secondary' />
                     </Link>
                     <Link href={`/items/delete/${ID}`}>
-                        <FaTrash className='text-error' />
+                        <IoMdTrash className='text-error' />
                     </Link>
                 </div>
             </div>

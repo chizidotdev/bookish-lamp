@@ -1,7 +1,10 @@
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import React from 'react';
 import { CgMenuLeft } from 'react-icons/cg';
-import { getUser, logout } from '~api/user';
+import { logout } from '~api/user';
+import { Button } from '~components';
+import { useUser } from '~store/user-store';
 
 const navbarItems = [
     { title: 'Items', href: '/items' },
@@ -10,16 +13,22 @@ const navbarItems = [
     { title: 'Pricing', href: '/pricing' },
 ];
 
-export default async function Navbar() {
-    // const user = await getUser();
-    // console.log(user)
+export function Navbar() {
+    const pathname = usePathname();
+    const { user } = useUser();
+
+    const handleLogout = async () => {
+        await logout();
+    };
+
+    if (pathname === '/auth/login' || pathname === '/auth/signup') return null;
 
     return (
-        <div className='bg-base-100 z-10'>
+        <nav className='fixed top-0 w-full bg-base-300 z-10'>
             <div className='navbar container mx-auto'>
                 <div className='navbar-start'>
                     <div className='dropdown'>
-                        <label tabIndex={0} className='btn btn-ghost lg:hidden'>
+                        <label tabIndex={0} className='btn btn-ghost mr-2 lg:hidden'>
                             <CgMenuLeft size='25' />
                         </label>
                         <ul
@@ -48,17 +57,22 @@ export default async function Navbar() {
                     </ul>
                 </div>
                 <div className='navbar-end gap-2'>
-                    <a href='http://localhost:8080/logout' className='btn btn-primary btn-outline'>
-                        Logout
-                    </a>
-                    <a href='http://localhost:8080/login' className='btn btn-outline'>
-                        Login
-                    </a>
-                    <Link href='signup' className='btn'>
-                        Get started
-                    </Link>
+                    {user ? (
+                        <Button onClick={handleLogout}>Logout</Button>
+                    ) : (
+                        <>
+                            <Link href='/auth/login' className='btn btn-outline'>
+                                Login
+                            </Link>
+                            <Link href='/auth/signup' className='btn'>
+                                Get started
+                            </Link>
+                        </>
+                    )}
                 </div>
             </div>
-        </div>
+        </nav>
     );
 }
+
+export default Navbar;

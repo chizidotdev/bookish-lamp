@@ -107,18 +107,11 @@ func (q *Queries) GetItemForUpdate(ctx context.Context, id uuid.UUID) (Item, err
 const listItems = `-- name: ListItems :many
 SELECT id, title, buying_price, selling_price, quantity, user_id, created_at FROM items
 WHERE user_id = $1
-ORDER BY id
-LIMIT $2 OFFSET $3
+ORDER BY created_at
 `
 
-type ListItemsParams struct {
-	UserID uuid.UUID `json:"user_id"`
-	Limit  int32     `json:"limit"`
-	Offset int32     `json:"offset"`
-}
-
-func (q *Queries) ListItems(ctx context.Context, arg ListItemsParams) ([]Item, error) {
-	rows, err := q.db.QueryContext(ctx, listItems, arg.UserID, arg.Limit, arg.Offset)
+func (q *Queries) ListItems(ctx context.Context, userID uuid.UUID) ([]Item, error) {
+	rows, err := q.db.QueryContext(ctx, listItems, userID)
 	if err != nil {
 		return nil, err
 	}

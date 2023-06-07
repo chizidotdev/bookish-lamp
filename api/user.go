@@ -82,8 +82,9 @@ func (server *Server) login(ctx *gin.Context) {
 		return
 	}
 
+	ctx.Header("Access-Control-Allow-Credentials", "true")
 	ctx.SetSameSite(http.SameSiteLaxMode)
-	ctx.SetCookie("Authorization", tokenString, 3600*24, "", "", false, true)
+	ctx.SetCookie("Authorization", tokenString, 3600*24, "/", "localhost", false, true)
 
 	ctx.JSON(http.StatusOK, gin.H{"token": tokenString})
 }
@@ -96,7 +97,7 @@ func (server *Server) logout(ctx *gin.Context) {
 
 func (server *Server) validateToken(ctx *gin.Context) {
 	user, exists := ctx.Get("user")
-	if exists == false {
+	if !exists {
 		ctx.JSON(http.StatusUnauthorized, utils.ErrorResponse("Unauthorized"))
 		return
 	}

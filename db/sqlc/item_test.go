@@ -60,6 +60,7 @@ func TestUpdateItem(t *testing.T) {
 	item := createRandomItem(t, user.ID)
 	arg := UpdateItemParams{
 		ID:       item.ID,
+		UserID:   user.ID,
 		Quantity: utils.RandomQuantity(),
 	}
 
@@ -74,7 +75,10 @@ func TestUpdateItem(t *testing.T) {
 func TestDeleteItem(t *testing.T) {
 	user := createRandomUser(t)
 	item := createRandomItem(t, user.ID)
-	err := testQueries.DeleteItem(context.Background(), item.ID)
+	err := testQueries.DeleteItem(context.Background(), DeleteItemParams{
+		ID:     item.ID,
+		UserID: user.ID,
+	})
 	require.NoError(t, err)
 
 	deletedItem, err := testQueries.GetItem(context.Background(), item.ID)

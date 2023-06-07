@@ -18,8 +18,7 @@ FOR NO KEY UPDATE;
 -- name: ListItems :many
 SELECT * FROM items
 WHERE user_id = $1
-ORDER BY id
-LIMIT $2 OFFSET $3;
+ORDER BY created_at;
 
 -- name: UpdateItem :one
 UPDATE items 
