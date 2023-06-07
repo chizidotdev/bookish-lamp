@@ -1,10 +1,10 @@
-'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import { CgMenuLeft } from 'react-icons/cg';
-import { useQuery } from 'react-query';
-import { getUser } from '~api/user';
+import { logout } from '~api/user';
+import { Button } from '~components';
+import { useUser } from '~store/user-store';
 
 const navbarItems = [
     { title: 'Items', href: '/items' },
@@ -15,11 +15,11 @@ const navbarItems = [
 
 export default function Navbar() {
     const pathname = usePathname();
-    const { data: user } = useQuery('user', {
-        queryFn: getUser,
-        refetchOnWindowFocus: false,
-    });
-    console.log('user ==== ', user);
+    const { user } = useUser();
+
+    const handleLogout = async () => {
+        await logout();
+    };
 
     if (pathname === '/auth/login' || pathname === '/auth/signup') return null;
 
@@ -57,17 +57,22 @@ export default function Navbar() {
                     </ul>
                 </div>
                 <div className='navbar-end gap-2'>
-                    <a href='/auth/logout' className='btn btn-primary btn-outline'>
-                        Logout
-                    </a>
-                    <a href='/auth/login' className='btn btn-outline'>
-                        Login
-                    </a>
-                    <Link href='/auth/signup' className='btn'>
-                        Get started
-                    </Link>
+                    {user ? (
+                        <Button onClick={handleLogout}>Logout</Button>
+                    ) : (
+                        <>
+                            <Link href='/auth/login' className='btn btn-outline'>
+                                Login
+                            </Link>
+                            <Link href='/auth/signup' className='btn'>
+                                Get started
+                            </Link>
+                        </>
+                    )}
                 </div>
             </div>
         </nav>
     );
 }
+
+export { getServerSideProps } from '~store/global';

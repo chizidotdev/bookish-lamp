@@ -1,4 +1,3 @@
-'use client';
 import { Bars } from 'react-loader-spinner';
 
 export function Loading() {

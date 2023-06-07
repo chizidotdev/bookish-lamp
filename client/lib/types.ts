@@ -14,3 +14,8 @@ export type Item = ItemBase & {
     ID: string;
     CreatedAt: string;
 };
+
+export type User = {
+    id: string;
+    email: string;
+};

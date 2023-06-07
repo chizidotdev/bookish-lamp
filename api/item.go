@@ -79,13 +79,7 @@ func (server *Server) listItems(ctx *gin.Context) {
 
 	user := ctx.MustGet("user").(userJWT)
 
-	arg := db.ListItemsParams{
-		UserID: user.ID,
-		Limit:  req.PageSize,
-		Offset: (req.PageID - 1) * req.PageSize,
-	}
-
-	items, err := server.store.ListItems(ctx, arg)
+	items, err := server.store.ListItems(ctx, user.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
 		return

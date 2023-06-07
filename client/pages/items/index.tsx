@@ -1,23 +1,13 @@
 import Link from 'next/link';
 import React from 'react';
+import ItemCard from '~components/item-card';
+import { useQuery } from 'react-query';
 import { getItems } from '~api/item';
-import { NextPage } from '~lib/types';
-import ItemCard from './item-card';
 
-export default async function Items({ searchParams }: NextPage) {
-    const pageID = searchParams['page_id'] ?? '1';
-    const items = await getItems(pageID, '5');
-
-    const incrementPage = () => {
-        const newPageID = Number(pageID) + 1;
-        return `/items?page_id=${newPageID}`;
-    };
-
-    const decrementPage = () => {
-        if (Number(pageID) === 1) return `/items?page_id=${pageID}`;
-        const newPageID = Number(pageID) - 1;
-        return `/items?page_id=${newPageID}`;
-    };
+export default function Items() {
+    const { data: items } = useQuery('items', {
+        queryFn: getItems,
+    });
 
     return (
         <>
@@ -28,7 +18,7 @@ export default async function Items({ searchParams }: NextPage) {
                     items.map((item) => <ItemCard key={item.ID} item={item} />)}
             </div>
 
-            <div className='mt-5 flex justify-end btn-group'>
+            {/*<div className='mt-5 flex justify-end btn-group'>
                 <Link href={decrementPage()} className='btn'>
                     «
                 </Link>
@@ -36,7 +26,7 @@ export default async function Items({ searchParams }: NextPage) {
                 <Link href={incrementPage()} className='btn'>
                     »
                 </Link>
-            </div>
+            </div>*/}
         </>
     );
 }

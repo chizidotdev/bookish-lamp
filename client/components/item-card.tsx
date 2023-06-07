@@ -1,8 +1,7 @@
-'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FaTrash, FaEdit } from 'react-icons/fa';
-import type { Item } from '~lib/models';
+import type { Item } from '~lib/types';
 
 export type ItemCardProps = {
     item: Item;
