@@ -3,7 +3,7 @@ import { usePathname } from 'next/navigation';
 import React from 'react';
 import { CgMenuLeft } from 'react-icons/cg';
 import { logout } from '~api/user';
-import { Button } from '~components';
+import { Button, Text } from '~components';
 import { useUser } from '~store/user-store';
 
 const navbarItems = [
@@ -58,7 +58,10 @@ export function Navbar() {
                 </div>
                 <div className='navbar-end gap-2'>
                     {user ? (
-                        <Button onClick={handleLogout}>Logout</Button>
+                        <>
+                            <Text variant='p'>{user.email}</Text>
+                            <Button onClick={handleLogout}>Logout</Button>
+                        </>
                     ) : (
                         <>
                             <Link href='/auth/login' className='btn btn-outline'>

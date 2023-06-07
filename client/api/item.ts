@@ -15,7 +15,7 @@ export const getItemById = async (id: string): Promise<Item> => {
     return data;
 };
 
-export const addItem = async (item: ItemBase): Promise<Item> => {
+export const newItem = async (item: ItemBase): Promise<Item> => {
     const response = await fetch(`${BASE_URL}/items`, {
         method: 'POST',
         body: JSON.stringify(item),

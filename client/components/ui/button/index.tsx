@@ -12,7 +12,7 @@ type Props = VariantProps<typeof buttonStyles> & {
 
 const buttonStyles = cva(['btn'], {
     variants: {
-        intent: {
+        variant: {
             primary: 'btn-primary',
             secondary: 'btn-secondary',
             accent: 'btn-accent',
