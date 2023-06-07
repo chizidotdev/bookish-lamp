@@ -13,7 +13,7 @@ const navbarItems = [
     { title: 'Pricing', href: '/pricing' },
 ];
 
-export default function Navbar() {
+export function Navbar() {
     const pathname = usePathname();
     const { user } = useUser();
 
@@ -24,11 +24,11 @@ export default function Navbar() {
     if (pathname === '/auth/login' || pathname === '/auth/signup') return null;
 
     return (
-        <nav className='fixed top-0 w-full bg-base-100 z-10'>
+        <nav className='fixed top-0 w-full bg-base-300 z-10'>
             <div className='navbar container mx-auto'>
                 <div className='navbar-start'>
                     <div className='dropdown'>
-                        <label tabIndex={0} className='btn btn-ghost lg:hidden'>
+                        <label tabIndex={0} className='btn btn-ghost mr-2 lg:hidden'>
                             <CgMenuLeft size='25' />
                         </label>
                         <ul
@@ -75,4 +75,4 @@ export default function Navbar() {
     );
 }
 
-export { getServerSideProps } from '~store/global';
+export default Navbar;

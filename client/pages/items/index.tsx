@@ -3,6 +3,7 @@ import React from 'react';
 import ItemCard from '~components/item-card';
 import { useQuery } from 'react-query';
 import { getItems } from '~api/item';
+import { ItemsLayout } from '~components';
 
 export default function Items() {
     const { data: items } = useQuery('items', {
@@ -10,7 +11,7 @@ export default function Items() {
     });
 
     return (
-        <>
+        <ItemsLayout>
             <h1 className='text-2xl font-bold mb-5'>Items</h1>
             <div className='flex flex-col gap-3'>
                 {items &&
@@ -27,6 +28,6 @@ export default function Items() {
                     »
                 </Link>
             </div>*/}
-        </>
+        </ItemsLayout>
     );
 }

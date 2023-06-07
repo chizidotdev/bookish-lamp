@@ -1,18 +1,9 @@
-import { useRouter } from 'next/router';
 import React from 'react';
 import AppLogo from '~components/app-logo';
-import { useUser } from '~store/user-store';
 
 export function AuthLayout({ children }: { children: React.ReactNode }) {
-    const { user } = useUser();
-    const { push } = useRouter();
-
-    if (user) {
-        push('/');
-    }
-
     return (
-        <div className='min-h-screen py-32'>
+        <div>
             <div className='text-center pb-10'>
                 <AppLogo />
             </div>

@@ -65,18 +65,7 @@ func (server *Server) getItem(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, item)
 }
 
-type listItemRequest struct {
-	PageID   int32 `form:"page_id" binding:"required,min=1"`
-	PageSize int32 `form:"page_size" binding:"required,min=5,max=15"`
-}
-
 func (server *Server) listItems(ctx *gin.Context) {
-	var req listItemRequest
-	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
-		return
-	}
-
 	user := ctx.MustGet("user").(userJWT)
 
 	items, err := server.store.ListItems(ctx, user.ID)
