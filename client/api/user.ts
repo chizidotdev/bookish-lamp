@@ -16,6 +16,15 @@ export const getUser = async (): Promise<User | false> => {
     return data;
 };
 
+export const signup = async ({ email, password }: LoginRequest): Promise<string> => {
+    const response = await fetch(`${BASE_URL}/signup`, {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();
+    return data;
+};
+
 export const login = async ({ email, password }: LoginRequest): Promise<{ token: string }> => {
     const response = await fetch(`${BASE_URL}/login`, {
         method: 'POST',
