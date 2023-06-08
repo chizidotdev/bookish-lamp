@@ -24,7 +24,7 @@ export default function Items() {
             <div className='flex flex-col gap-3'>
                 {items &&
                     Boolean(items.length) &&
-                    items.map((item) => <ItemCard key={item.ID} item={item} />)}
+                    items.map((item) => <ItemCard key={item.id} item={item} />)}
             </div>
 
             {/*<div className='mt-5 flex justify-end btn-group'>

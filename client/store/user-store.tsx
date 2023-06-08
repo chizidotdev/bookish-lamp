@@ -22,17 +22,14 @@ export const UserProvider = ({ children }: TUserProps) => {
         data: user,
         isLoading,
         refetch,
-        isRefetching,
     } = useQuery('user', {
         queryFn: getUser,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
     });
 
-    console.log(isRefetching);
     useEffect(() => {
         const refetchUser = () => {
-            console.log('storage change');
             refetch();
         };
 

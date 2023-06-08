@@ -6,7 +6,14 @@ import '../styles/globals.css';
 import { RootLayout } from '~components';
 import { UserProvider } from '~store/user-store';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false,
+        },
+    },
+});
+
 const MyApp: AppType = ({ Component, pageProps }) => {
     // ReactGA.initialize("G-FGNLC0J6Q3");
 

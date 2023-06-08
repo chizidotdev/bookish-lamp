@@ -38,6 +38,7 @@ export const deleteItem = async (id: string): Promise<string> => {
     const response = await fetch(`${BASE_URL}/items/${id}`, {
         method: 'DELETE',
     });
+    console.log('response', response)
     const data = await response.json();
     return data;
 };
