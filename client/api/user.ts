@@ -31,11 +31,19 @@ export const login = async ({ email, password }: LoginRequest): Promise<{ token:
         body: JSON.stringify({ email, password }),
     });
     const data = await response.json();
+    if (response.status === 200) {
+        localStorage.setItem('token', data.token);
+        window.dispatchEvent(new Event('storage'));
+    }
     return data;
 };
 
 export const logout = async (): Promise<any> => {
     const response = await fetch(`${BASE_URL}/logout`);
     const data = await response.json();
+    if (response.status === 200) {
+        localStorage.removeItem('token');
+        window.dispatchEvent(new Event('storage'));
+    }
     return data;
 };

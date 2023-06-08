@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { getUser } from '~api/user';
 import { User } from '~lib/types';
@@ -18,11 +18,27 @@ const UserContext = createContext<UserContextProps>({
 });
 
 export const UserProvider = ({ children }: TUserProps) => {
-    const { data: user, isLoading } = useQuery('user', {
+    const {
+        data: user,
+        isLoading,
+        refetch,
+    } = useQuery('user', {
         queryFn: getUser,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
     });
+
+    useEffect(() => {
+        const refetchUser = () => {
+            refetch();
+        };
+
+        window.addEventListener('storage', refetchUser);
+
+        return () => {
+            window.removeEventListener('storage', refetchUser);
+        };
+    }, [refetch]);
 
     return <UserContext.Provider value={{ user, isLoading }}>{children}</UserContext.Provider>;
 };

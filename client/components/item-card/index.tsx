@@ -3,6 +3,9 @@ import { useRouter } from 'next/navigation';
 import { IoMdTrash } from 'react-icons/io';
 import { FiEdit } from 'react-icons/fi';
 import type { Item } from '~lib/types';
+import { useMutation, useQueryClient } from 'react-query';
+import { deleteItem } from '~api/item';
+import { Button } from '~components/ui';
 
 export type ItemCardProps = {
     item: Item;
@@ -10,13 +13,21 @@ export type ItemCardProps = {
 
 export function ItemCard({ item }: ItemCardProps) {
     const { push } = useRouter();
-    const { ID, title, buying_price, selling_price, quantity } = item;
+    const queryClient = useQueryClient();
+    const { mutate } = useMutation(deleteItem, {
+        onSuccess: () => {
+            push('/items');
+            queryClient.invalidateQueries('items');
+        },
+    });
+
+    const { id, title, buying_price, selling_price, quantity } = item;
 
     return (
         <div className='card bg-base-200 shadow-md'>
             <div className='card-body flex-row items-center justify-between gap-1 mx-0 py-5'>
                 <div
-                    onClick={() => push(`/items/${ID}/sales`)}
+                    onClick={() => push(`/items/${id}/sales`)}
                     className='flex-1 flex flex-col cursor-pointer'
                 >
                     <div className='indicator'>
@@ -34,13 +45,15 @@ export function ItemCard({ item }: ItemCardProps) {
                         <div className='badge badge-accent'>₦{selling_price}</div>
                     </div>
                 </div>
-                <div className='card-actions flex-row gap-5'>
-                    <Link href={`/items/${ID}`}>
-                        <FiEdit className='text-secondary' />
+                <div className='card-actions flex-row gap-4'>
+                    <Link href={`/items/${id}/edit`}>
+                        <Button>
+                            <FiEdit className='text-secondary' />
+                        </Button>
                     </Link>
-                    <Link href={`/items/delete/${ID}`}>
+                    <Button onClick={() => mutate(id)}>
                         <IoMdTrash className='text-error' />
-                    </Link>
+                    </Button>
                 </div>
             </div>
         </div>

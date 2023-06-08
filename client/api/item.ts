@@ -15,7 +15,7 @@ export const getItemById = async (id: string): Promise<Item> => {
     return data;
 };
 
-export const addItem = async (item: ItemBase): Promise<Item> => {
+export const newItem = async (item: ItemBase): Promise<Item> => {
     const response = await fetch(`${BASE_URL}/items`, {
         method: 'POST',
         body: JSON.stringify(item),
@@ -38,6 +38,7 @@ export const deleteItem = async (id: string): Promise<string> => {
     const response = await fetch(`${BASE_URL}/items/${id}`, {
         method: 'DELETE',
     });
+    console.log('response', response)
     const data = await response.json();
     return data;
 };

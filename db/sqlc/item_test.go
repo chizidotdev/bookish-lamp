@@ -92,13 +92,7 @@ func TestListItems(t *testing.T) {
 		createRandomItem(t, user.ID)
 	}
 
-	arg := ListItemsParams{
-		UserID: user.ID,
-		Limit:  4,
-		Offset: 0,
-	}
-
-	items, err := testQueries.ListItems(context.Background(), arg)
+	items, err := testQueries.ListItems(context.Background(), user.ID)
 	require.NoError(t, err)
 	require.Len(t, items, 4)
 
