@@ -94,7 +94,7 @@ func TestListItems(t *testing.T) {
 
 	items, err := testQueries.ListItems(context.Background(), user.ID)
 	require.NoError(t, err)
-	require.Len(t, items, 4)
+	require.Len(t, items, 5)
 
 	for _, item := range items {
 		require.NotEmpty(t, item)

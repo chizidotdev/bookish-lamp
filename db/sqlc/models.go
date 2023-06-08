@@ -5,10 +5,38 @@
 package db
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
+
+type Customer struct {
+	ID        uuid.UUID      `json:"id"`
+	OrderID   uuid.UUID      `json:"order_id"`
+	Name      string         `json:"name"`
+	Email     sql.NullString `json:"email"`
+	Phone     sql.NullString `json:"phone"`
+	Address   sql.NullString `json:"address"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+}
+
+type Dashboard struct {
+	ID               uuid.UUID       `json:"id"`
+	UserID           uuid.UUID       `json:"user_id"`
+	CreatedAt        time.Time       `json:"created_at"`
+	UpdatedAt        time.Time       `json:"updated_at"`
+	TotalItems       int64           `json:"total_items"`
+	LowStockItems    int64           `json:"low_stock_items"`
+	ItemsToShip      sql.NullInt64   `json:"items_to_ship"`
+	RecentSales      sql.NullInt64   `json:"recent_sales"`
+	SalesPerformance sql.NullFloat64 `json:"sales_performance"`
+	PendingOrders    sql.NullInt64   `json:"pending_orders"`
+	Notifications    sql.NullString  `json:"notifications"`
+	InventoryValue   sql.NullFloat64 `json:"inventory_value"`
+	ExpiringItems    sql.NullInt64   `json:"expiring_items"`
+}
 
 type Item struct {
 	ID           uuid.UUID `json:"id"`
@@ -18,6 +46,37 @@ type Item struct {
 	Quantity     int64     `json:"quantity"`
 	UserID       uuid.UUID `json:"user_id"`
 	CreatedAt    time.Time `json:"created_at"`
+}
+
+type Order struct {
+	ID          uuid.UUID `json:"id"`
+	UserID      uuid.UUID `json:"user_id"`
+	OrderDate   time.Time `json:"order_date"`
+	TotalAmount float32   `json:"total_amount"`
+	Status      string    `json:"status"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+type OrderItem struct {
+	ID        uuid.UUID `json:"id"`
+	OrderID   uuid.UUID `json:"order_id"`
+	ItemID    uuid.UUID `json:"item_id"`
+	Quantity  int64     `json:"quantity"`
+	Price     float32   `json:"price"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type Sale struct {
+	ID           uuid.UUID `json:"id"`
+	ItemID       uuid.UUID `json:"item_id"`
+	QuantitySold int64     `json:"quantity_sold"`
+	SalePrice    float32   `json:"sale_price"`
+	SaleDate     time.Time `json:"sale_date"`
+	CustomerName string    `json:"customer_name"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
 }
 
 type User struct {
