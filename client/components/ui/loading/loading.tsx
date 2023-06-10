@@ -6,10 +6,10 @@ export function Loading() {
             <Bars
                 height='50'
                 width='50'
-                color='#fff'
+                color='hsl(var(--s) / var(--tw-text-opacity))'
                 ariaLabel='bars-loading'
                 wrapperStyle={{}}
-                wrapperClass=''
+                wrapperClass='text-base-300'
                 visible={true}
             />
         </div>

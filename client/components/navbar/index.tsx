@@ -21,13 +21,13 @@ export function Navbar() {
         await logout();
     };
 
-    if (pathname === '/auth/login' || pathname === '/auth/signup') return null;
+    if (pathname === '/' || pathname === '/auth/login' || pathname === '/auth/signup') return null;
 
     return (
         <nav className='fixed top-0 w-full bg-base-300 z-10'>
             <div className='navbar container mx-auto'>
                 <div className='navbar-start'>
-                    <div className='dropdown'>
+                    {/*<div className='dropdown'>
                         <label tabIndex={0} className='btn btn-ghost mr-2 lg:hidden'>
                             <CgMenuLeft size='25' />
                         </label>
@@ -41,13 +41,13 @@ export function Navbar() {
                                 </li>
                             ))}
                         </ul>
-                    </div>
+                    </div>*/}
                     <Link href='/' className='normal-case text-xl'>
                         Copia
                     </Link>
                 </div>
 
-                <div className='navbar-center hidden lg:flex'>
+                {/*<div className='navbar-center hidden lg:flex'>
                     <ul className='menu menu-horizontal px-1'>
                         {navbarItems.map(({ title, href }) => (
                             <li key={href}>
@@ -55,7 +55,7 @@ export function Navbar() {
                             </li>
                         ))}
                     </ul>
-                </div>
+                </div>*/}
                 <div className='navbar-end gap-2'>
                     {user ? (
                         <>

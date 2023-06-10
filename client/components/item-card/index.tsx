@@ -42,13 +42,13 @@ export function ItemCard({ item }: ItemCardProps) {
                     </div>
                     <div className='flex gap-2 mt-1'>
                         <div className='badge'>₦{buying_price}</div>
-                        <div className='badge badge-accent'>₦{selling_price}</div>
+                        <div className='badge badge-primary'>₦{selling_price}</div>
                     </div>
                 </div>
                 <div className='card-actions flex-row gap-4'>
                     <Link href={`/items/${id}/edit`}>
                         <Button>
-                            <FiEdit className='text-secondary' />
+                            <FiEdit />
                         </Button>
                     </Link>
                     <Button onClick={() => mutate(id)}>

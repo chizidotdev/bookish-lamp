@@ -27,7 +27,7 @@ export default function Page() {
     return (
         <AuthLayout>
             <div className='text-center mb-5'>
-                <Text variant='h1'>Login</Text>
+                <Text variant='h1'>Welcome back</Text>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className='form-control gap-2'>
