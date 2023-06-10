@@ -2,8 +2,6 @@ package utils
 
 import (
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 // Config stores all the configuration for the application
@@ -23,16 +21,9 @@ type Config struct {
 var EnvVars Config
 
 // LoadConfig loads the configuration from the config file or env variable
-func LoadConfig() (err error) {
-	err = godotenv.Load()
-	if err != nil {
-		return
-	}
-
+func LoadConfig() {
 	EnvVars.DBDriver = os.Getenv("DB_DRIVER")
 	EnvVars.DBSource = os.Getenv("DB_SOURCE")
 	EnvVars.ServerAddress = os.Getenv("SERVER_ADDRESS")
 	EnvVars.AuthSecret = os.Getenv("AUTH_SECRET")
-
-	return err
 }
