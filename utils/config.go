@@ -23,7 +23,7 @@ type Config struct {
 var EnvVars Config
 
 // LoadConfig loads the configuration from the config file or env variable
-func LoadConfig(path string) (config Config, err error) {
+func LoadConfig() (err error) {
 	err = godotenv.Load()
 	if err != nil {
 		return
@@ -34,7 +34,5 @@ func LoadConfig(path string) (config Config, err error) {
 	EnvVars.ServerAddress = os.Getenv("SERVER_ADDRESS")
 	EnvVars.AuthSecret = os.Getenv("AUTH_SECRET")
 
-	config = EnvVars
-
-	return config, err
+	return err
 }
