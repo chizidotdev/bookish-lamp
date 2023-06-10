@@ -1,7 +1,9 @@
 package utils
 
 import (
-	"github.com/spf13/viper"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
 // Config stores all the configuration for the application
@@ -22,14 +24,17 @@ var EnvVars Config
 
 // LoadConfig loads the configuration from the config file or env variable
 func LoadConfig(path string) (config Config, err error) {
-	viper.AddConfigPath(path)
-	viper.SetConfigName(".env")
-	viper.SetConfigType("env")
-	viper.AutomaticEnv()
-	if err = viper.ReadInConfig(); err != nil {
+	err = godotenv.Load()
+	if err != nil {
 		return
 	}
 
-	err = viper.Unmarshal(&config)
-	return
+	EnvVars.DBDriver = os.Getenv("DB_DRIVER")
+	EnvVars.DBSource = os.Getenv("DB_SOURCE")
+	EnvVars.ServerAddress = os.Getenv("SERVER_ADDRESS")
+	EnvVars.AuthSecret = os.Getenv("AUTH_SECRET")
+
+	config = EnvVars
+
+	return config, err
 }
