@@ -27,12 +27,7 @@ func (c CustomClaims) Validate(ctx context.Context) error {
 }
 
 func ValidateToken(ctx *gin.Context) {
-	config, err := utils.LoadConfig(".")
-	if err != nil {
-		log.Fatal("Error loading config", err)
-	}
-
-	issuerURL, err := url.Parse("https://" + config.Auth0Domain + "/")
+	issuerURL, err := url.Parse("https://" + utils.EnvVars.Auth0Domain + "/")
 	if err != nil {
 		log.Fatalf("Failed to parse the issuer url: %v", err)
 	}
@@ -43,7 +38,7 @@ func ValidateToken(ctx *gin.Context) {
 		provider.KeyFunc,
 		validator.RS256,
 		issuerURL.String(),
-		[]string{config.Auth0Audience},
+		[]string{utils.EnvVars.Auth0Audience},
 		validator.WithCustomClaims(
 			func() validator.CustomClaims {
 				return &CustomClaims{}
