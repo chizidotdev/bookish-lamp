@@ -3,20 +3,18 @@ import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { signup } from '~api/user';
-import { Button, Checkbox, Input, Text, Link, AuthLayout } from '~components';
+import { Button, Input, Text, Link, AuthLayout } from '~components';
 
 type FormValues = {
     email: string;
     password: string;
     confirmPassword: string;
-    terms: boolean;
 };
 
 export default function Page() {
     const { push } = useRouter();
     const { mutate, isLoading } = useMutation(signup, {
-        onSuccess: (data) => {
-            console.log('success', data);
+        onSuccess: () => {
             push('/auth/login');
         },
     });
@@ -55,9 +53,6 @@ export default function Page() {
                     placeholder='Confirm Password'
                     autoComplete='off'
                 />
-                <Checkbox {...register('terms')}>
-                    Agreed to terms of use and privacy statements.
-                </Checkbox>
 
                 <div className='mt-5'>
                     <Button autoWidth loading={isLoading} type='submit'>
