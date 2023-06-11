@@ -8,12 +8,13 @@ RETURNING *;
 
 -- name: GetSale :one
 SELECT * FROM sales
-WHERE id = $1 LIMIT 1;
+WHERE (id = $1 AND item_id = $2)
+LIMIT 1;
 
 -- name: GetSaleForUpdate :one
 SELECT * FROM sales
-WHERE id = $1 LIMIT 1
-FOR NO KEY UPDATE;
+WHERE (id = $1 AND item_id = $2)
+LIMIT 1 FOR NO KEY UPDATE;
 
 -- name: ListSales :many
 SELECT * FROM sales

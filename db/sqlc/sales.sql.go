@@ -67,11 +67,17 @@ func (q *Queries) DeleteSale(ctx context.Context, arg DeleteSaleParams) error {
 
 const getSale = `-- name: GetSale :one
 SELECT id, item_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at FROM sales
-WHERE id = $1 LIMIT 1
+WHERE (id = $1 AND item_id = $2)
+LIMIT 1
 `
 
-func (q *Queries) GetSale(ctx context.Context, id uuid.UUID) (Sale, error) {
-	row := q.db.QueryRowContext(ctx, getSale, id)
+type GetSaleParams struct {
+	ID     uuid.UUID `json:"id"`
+	ItemID uuid.UUID `json:"item_id"`
+}
+
+func (q *Queries) GetSale(ctx context.Context, arg GetSaleParams) (Sale, error) {
+	row := q.db.QueryRowContext(ctx, getSale, arg.ID, arg.ItemID)
 	var i Sale
 	err := row.Scan(
 		&i.ID,
@@ -88,12 +94,17 @@ func (q *Queries) GetSale(ctx context.Context, id uuid.UUID) (Sale, error) {
 
 const getSaleForUpdate = `-- name: GetSaleForUpdate :one
 SELECT id, item_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at FROM sales
-WHERE id = $1 LIMIT 1
-FOR NO KEY UPDATE
+WHERE (id = $1 AND item_id = $2)
+LIMIT 1 FOR NO KEY UPDATE
 `
 
-func (q *Queries) GetSaleForUpdate(ctx context.Context, id uuid.UUID) (Sale, error) {
-	row := q.db.QueryRowContext(ctx, getSaleForUpdate, id)
+type GetSaleForUpdateParams struct {
+	ID     uuid.UUID `json:"id"`
+	ItemID uuid.UUID `json:"item_id"`
+}
+
+func (q *Queries) GetSaleForUpdate(ctx context.Context, arg GetSaleForUpdateParams) (Sale, error) {
+	row := q.db.QueryRowContext(ctx, getSaleForUpdate, arg.ID, arg.ItemID)
 	var i Sale
 	err := row.Scan(
 		&i.ID,

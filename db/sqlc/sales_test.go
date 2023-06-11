@@ -44,7 +44,11 @@ func TestGetSale(t *testing.T) {
 	user := createRandomUser(t)
 	item := createRandomItem(t, user.ID)
 	createdSale := createRandomSale(t, item.ID)
-	sale, err := testQueries.GetSale(context.Background(), createdSale.ID)
+	args := GetSaleParams{
+		ID:     createdSale.ID,
+		ItemID: item.ID,
+	}
+	sale, err := testQueries.GetSale(context.Background(), args)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, sale)
@@ -96,7 +100,11 @@ func TestDeleteSale(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	deletedSale, err := testQueries.GetSale(context.Background(), sale.ID)
+	args := GetSaleParams{
+		ID:     sale.ID,
+		ItemID: item.ID,
+	}
+	deletedSale, err := testQueries.GetSale(context.Background(), args)
 	require.Error(t, err)
 	require.Empty(t, deletedSale)
 }

@@ -18,8 +18,8 @@ type Querier interface {
 	DeleteSale(ctx context.Context, arg DeleteSaleParams) error
 	GetItem(ctx context.Context, id uuid.UUID) (Item, error)
 	GetItemForUpdate(ctx context.Context, id uuid.UUID) (Item, error)
-	GetSale(ctx context.Context, id uuid.UUID) (Sale, error)
-	GetSaleForUpdate(ctx context.Context, id uuid.UUID) (Sale, error)
+	GetSale(ctx context.Context, arg GetSaleParams) (Sale, error)
+	GetSaleForUpdate(ctx context.Context, arg GetSaleForUpdateParams) (Sale, error)
 	GetUser(ctx context.Context, email string) (User, error)
 	ListItems(ctx context.Context, userID uuid.UUID) ([]Item, error)
 	ListSales(ctx context.Context, itemID uuid.UUID) ([]Sale, error)
