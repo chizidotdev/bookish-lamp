@@ -42,6 +42,7 @@ type Querier interface {
 	UpdateDashboardSalesPerformance(ctx context.Context) error
 	UpdateDashboardTotalItems(ctx context.Context) error
 	UpdateItem(ctx context.Context, arg UpdateItemParams) (Item, error)
+	UpdateItemQuantity(ctx context.Context, arg UpdateItemQuantityParams) (Item, error)
 	UpdateSale(ctx context.Context, arg UpdateSaleParams) (Sale, error)
 }
 

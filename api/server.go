@@ -11,12 +11,12 @@ import (
 
 // Server serves HTTP requests for the service
 type Server struct {
-	store  db.Store
+	store  *db.Store
 	router *gin.Engine
 }
 
 // NewServer creates a new HTTP server and setup routing
-func NewServer(store db.Store) *Server {
+func NewServer(store *db.Store) *Server {
 	server := &Server{store: store}
 	router := gin.Default()
 
@@ -29,17 +29,33 @@ func NewServer(store db.Store) *Server {
 		MaxAge:           12 * time.Hour,
 	}))
 
+	// User Authentication
 	router.POST("/signup", server.signup)
 	router.POST("/login", server.login)
 	router.GET("/logout", server.logout)
 	router.GET("/users", server.listUsers)
 	router.GET("/validateToken", server.isAuthenticated, server.validateToken)
 
-	router.POST("/items", server.isAuthenticated, server.createItem)
-	router.GET("/items", server.isAuthenticated, server.listItems)
-	router.GET("/items/:id", server.isAuthenticated, server.getItem)
-	router.PUT("/items/:id", server.isAuthenticated, server.updateItem)
-	router.DELETE("/items/:id", server.isAuthenticated, server.deleteItem)
+	// Items
+	items := router.Group("/items")
+	items.Use(server.isAuthenticated)
+	{
+		items.POST("/", server.createItem)
+		items.GET("/", server.listItems)
+		items.GET("/:id", server.getItem)
+		items.PUT("/:id", server.updateItem)
+		items.DELETE("/:id", server.deleteItem)
+
+		// Sales
+		sales := items.Group("/:id/sales")
+		{
+			sales.POST("/", server.createSale)
+			sales.GET("/", server.listSales)
+			sales.GET("/:saleID", server.getSale)
+			sales.PUT("/:saleID", server.updateSale)
+			sales.DELETE("/:saleID", server.deleteSale)
+		}
+	}
 
 	server.router = router
 	return server

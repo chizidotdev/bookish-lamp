@@ -29,5 +29,11 @@ quantity = $5
 WHERE (id = $1 AND user_id = $6)
 RETURNING *;
 
+-- name: UpdateItemQuantity :one
+UPDATE items
+SET quantity = quantity + $2
+WHERE (id = $1 AND user_id = $3)
+RETURNING *;
+
 -- name: DeleteItem :exec
 DELETE FROM items WHERE (id = $1 AND user_id = $2);

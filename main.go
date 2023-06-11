@@ -10,14 +10,15 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func main() {
+func init() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Cannot load config:", err)
 	}
-
 	utils.LoadConfig()
+}
 
+func main() {
 	conn, err := sql.Open(utils.EnvVars.DBDriver, utils.EnvVars.DBSource)
 	if err != nil {
 		log.Fatal("Cannot connect to db:", err)
