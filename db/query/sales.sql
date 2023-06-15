@@ -1,8 +1,8 @@
 -- name: CreateSale :one
 INSERT INTO sales (
-    item_id, quantity_sold, sale_price, customer_name, sale_date 
+    item_id, user_id, quantity_sold, sale_price, customer_name, sale_date 
 ) VALUES (
-    $1, $2, $3, $4, $5
+    $1, $2, $3, $4, $5, $6
 )
 RETURNING *;
 
@@ -19,6 +19,11 @@ LIMIT 1 FOR NO KEY UPDATE;
 -- name: ListSales :many
 SELECT * FROM sales
 WHERE item_id = $1
+ORDER BY sale_date DESC;
+
+-- name: ListSalesByUserId :many
+SELECT * FROM sales
+WHERE user_id = $1
 ORDER BY sale_date DESC;
 
 -- name: UpdateSale :one

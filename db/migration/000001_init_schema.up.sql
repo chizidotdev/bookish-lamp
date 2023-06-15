@@ -18,25 +18,26 @@ CREATE TABLE "items" (
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
-CREATE TABLE "dashboard" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1()),
-  "user_id" uuid NOT NULL,
-  "created_at" timestamptz NOT NULL DEFAULT (now()),
-  "updated_at" timestamptz NOT NULL DEFAULT (now()),
-  "total_items" bigint NOT NULL DEFAULT 0,
-  "low_stock_items" bigint NOT NULL,
-  "items_to_ship" bigint,
-  "recent_sales" bigint,
-  "sales_performance" float4,
-  "pending_orders" bigint,
-  "notifications" varchar,
-  "inventory_value" float4,
-  "expiring_items" bigint
-);
+-- CREATE TABLE "dashboard" (
+--   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1()),
+--   "user_id" uuid NOT NULL,
+--   "created_at" timestamptz NOT NULL DEFAULT (now()),
+--   "updated_at" timestamptz NOT NULL DEFAULT (now()),
+--   "total_items" bigint NOT NULL DEFAULT 0,
+--   "low_stock_items" bigint NOT NULL DEFAULT 0,
+--   "items_to_ship" bigint NOT NULL DEFAULT 0,
+--   "recent_sales" bigint NOT NULL DEFAULT 0,
+--   "sales_performance" float4 NOT NULL DEFAULT 0,
+--   "pending_orders" bigint NOT NULL DEFAULT 0,
+--   "notifications" varchar NOT NULL DEFAULT '',
+--   "inventory_value" float4 NOT NULL DEFAULT 0,
+--   "expiring_items" bigint NOT NULL DEFAULT 0
+-- );
 
 CREATE TABLE "sales" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1()),
   "item_id" uuid NOT NULL,
+  "user_id" uuid REFERENCES users(id) NOT NULL,
   "quantity_sold" bigint NOT NULL,
   "sale_price" float4 NOT NULL,
   "sale_date" timestamptz NOT NULL DEFAULT (now()),
