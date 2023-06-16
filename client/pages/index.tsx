@@ -1,3 +1,4 @@
+import { Box, Button, ButtonGroup } from '@chakra-ui/react';
 import Link from 'next/link';
 import { Text } from '~components';
 import { useUser } from '~store/user-store';
@@ -10,14 +11,14 @@ export default function Home() {
             <Text>Welcome to Copia</Text>
             <Text>Log in with your Copia account to continue</Text>
 
-            <div className='mt-5 flex justify-center gap-4'>
-                <Link href='/auth/login' className='btn'>
-                    Login
+            <ButtonGroup mt='5'>
+                <Link href='/auth/login'>
+                    <Button variant='outline'>Login</Button>
                 </Link>
-                <Link href='/auth/signup' className='btn btn-secondary'>
-                    Get started
+                <Link href='/auth/signup'>
+                    <Button>Get started</Button>
                 </Link>
-            </div>
+            </ButtonGroup>
         </>
     );
 
@@ -27,11 +28,13 @@ export default function Home() {
                 <Text>Signed in as {user.email}</Text>
                 <Text>Continue where you left off</Text>
 
-                <div className='mt-5 flex justify-center gap-4'>
-                    <Link href='/items' className='btn btn-secondary'>
-                        Dashboard
-                    </Link>
-                </div>
+                <Box>
+                    <div className='mt-5 flex justify-center gap-4'>
+                        <Link href='/items'>
+                            <Button>Dashboard</Button>
+                        </Link>
+                    </div>
+                </Box>
             </>
         );
     }

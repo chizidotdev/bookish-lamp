@@ -1,9 +1,10 @@
+import { Button } from '@chakra-ui/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import { CgMenuLeft } from 'react-icons/cg';
 import { logout } from '~api/user';
-import { Button, Text } from '~components';
+import { Text } from '~components';
 import { useUser } from '~store/user-store';
 
 const navbarItems = [
@@ -60,7 +61,7 @@ export function Navbar() {
                     {user ? (
                         <>
                             <Text variant='p'>{user.email}</Text>
-                            <Button onClick={handleLogout}>Logout</Button>
+                            <Button variant='outline' onClick={handleLogout}>Logout</Button>
                         </>
                     ) : (
                         <>
