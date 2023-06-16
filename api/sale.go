@@ -157,6 +157,11 @@ func (server *Server) deleteSale(ctx *gin.Context) {
 		ID:     saleID,
 		ItemID: itemID,
 	})
+	if err != nil {
+		errMessage := fmt.Errorf("sale not found: %v", err)
+		ctx.JSON(http.StatusNotFound, utils.ErrorResponse(errMessage.Error()))
+		return
+	}
 
 	args := db.DeleteSaleParams{
 		ID:     saleID,

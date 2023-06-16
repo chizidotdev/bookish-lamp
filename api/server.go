@@ -40,8 +40,8 @@ func NewServer(store *db.Store) *Server {
 	items := router.Group("/items")
 	items.Use(server.isAuthenticated)
 	{
-		items.POST("/", server.createItem)
-		items.GET("/", server.listItems)
+		items.POST("", server.createItem)
+		items.GET("", server.listItems)
 		items.GET("/:id", server.getItem)
 		items.PUT("/:id", server.updateItem)
 		items.DELETE("/:id", server.deleteItem)
@@ -49,8 +49,8 @@ func NewServer(store *db.Store) *Server {
 		// Sales
 		sales := items.Group("/:id/sales")
 		{
-			sales.POST("/", server.createSale)
-			sales.GET("/", server.listSales)
+			sales.POST("", server.createSale)
+			sales.GET("", server.listSales)
 			sales.GET("/:saleID", server.getSale)
 			sales.PUT("/:saleID", server.updateSale)
 			sales.DELETE("/:saleID", server.deleteSale)
