@@ -14,15 +14,16 @@ import (
 
 const createSale = `-- name: CreateSale :one
 INSERT INTO sales (
-    item_id, quantity_sold, sale_price, customer_name, sale_date 
+    item_id, user_id, quantity_sold, sale_price, customer_name, sale_date 
 ) VALUES (
-    $1, $2, $3, $4, $5
+    $1, $2, $3, $4, $5, $6
 )
-RETURNING id, item_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at
+RETURNING id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at
 `
 
 type CreateSaleParams struct {
 	ItemID       uuid.UUID `json:"item_id"`
+	UserID       uuid.UUID `json:"user_id"`
 	QuantitySold int64     `json:"quantity_sold"`
 	SalePrice    float32   `json:"sale_price"`
 	CustomerName string    `json:"customer_name"`
@@ -32,6 +33,7 @@ type CreateSaleParams struct {
 func (q *Queries) CreateSale(ctx context.Context, arg CreateSaleParams) (Sale, error) {
 	row := q.db.QueryRowContext(ctx, createSale,
 		arg.ItemID,
+		arg.UserID,
 		arg.QuantitySold,
 		arg.SalePrice,
 		arg.CustomerName,
@@ -41,6 +43,7 @@ func (q *Queries) CreateSale(ctx context.Context, arg CreateSaleParams) (Sale, e
 	err := row.Scan(
 		&i.ID,
 		&i.ItemID,
+		&i.UserID,
 		&i.QuantitySold,
 		&i.SalePrice,
 		&i.SaleDate,
@@ -66,16 +69,23 @@ func (q *Queries) DeleteSale(ctx context.Context, arg DeleteSaleParams) error {
 }
 
 const getSale = `-- name: GetSale :one
-SELECT id, item_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at FROM sales
-WHERE id = $1 LIMIT 1
+SELECT id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at FROM sales
+WHERE (id = $1 AND item_id = $2)
+LIMIT 1
 `
 
-func (q *Queries) GetSale(ctx context.Context, id uuid.UUID) (Sale, error) {
-	row := q.db.QueryRowContext(ctx, getSale, id)
+type GetSaleParams struct {
+	ID     uuid.UUID `json:"id"`
+	ItemID uuid.UUID `json:"item_id"`
+}
+
+func (q *Queries) GetSale(ctx context.Context, arg GetSaleParams) (Sale, error) {
+	row := q.db.QueryRowContext(ctx, getSale, arg.ID, arg.ItemID)
 	var i Sale
 	err := row.Scan(
 		&i.ID,
 		&i.ItemID,
+		&i.UserID,
 		&i.QuantitySold,
 		&i.SalePrice,
 		&i.SaleDate,
@@ -87,17 +97,23 @@ func (q *Queries) GetSale(ctx context.Context, id uuid.UUID) (Sale, error) {
 }
 
 const getSaleForUpdate = `-- name: GetSaleForUpdate :one
-SELECT id, item_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at FROM sales
-WHERE id = $1 LIMIT 1
-FOR NO KEY UPDATE
+SELECT id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at FROM sales
+WHERE (id = $1 AND item_id = $2)
+LIMIT 1 FOR NO KEY UPDATE
 `
 
-func (q *Queries) GetSaleForUpdate(ctx context.Context, id uuid.UUID) (Sale, error) {
-	row := q.db.QueryRowContext(ctx, getSaleForUpdate, id)
+type GetSaleForUpdateParams struct {
+	ID     uuid.UUID `json:"id"`
+	ItemID uuid.UUID `json:"item_id"`
+}
+
+func (q *Queries) GetSaleForUpdate(ctx context.Context, arg GetSaleForUpdateParams) (Sale, error) {
+	row := q.db.QueryRowContext(ctx, getSaleForUpdate, arg.ID, arg.ItemID)
 	var i Sale
 	err := row.Scan(
 		&i.ID,
 		&i.ItemID,
+		&i.UserID,
 		&i.QuantitySold,
 		&i.SalePrice,
 		&i.SaleDate,
@@ -109,7 +125,7 @@ func (q *Queries) GetSaleForUpdate(ctx context.Context, id uuid.UUID) (Sale, err
 }
 
 const listSales = `-- name: ListSales :many
-SELECT id, item_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at FROM sales
+SELECT id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at FROM sales
 WHERE item_id = $1
 ORDER BY sale_date DESC
 `
@@ -126,6 +142,46 @@ func (q *Queries) ListSales(ctx context.Context, itemID uuid.UUID) ([]Sale, erro
 		if err := rows.Scan(
 			&i.ID,
 			&i.ItemID,
+			&i.UserID,
+			&i.QuantitySold,
+			&i.SalePrice,
+			&i.SaleDate,
+			&i.CustomerName,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listSalesByUserId = `-- name: ListSalesByUserId :many
+SELECT id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at FROM sales
+WHERE user_id = $1
+ORDER BY sale_date DESC
+`
+
+func (q *Queries) ListSalesByUserId(ctx context.Context, userID uuid.UUID) ([]Sale, error) {
+	rows, err := q.db.QueryContext(ctx, listSalesByUserId, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Sale{}
+	for rows.Next() {
+		var i Sale
+		if err := rows.Scan(
+			&i.ID,
+			&i.ItemID,
+			&i.UserID,
 			&i.QuantitySold,
 			&i.SalePrice,
 			&i.SaleDate,
@@ -153,7 +209,7 @@ sale_price = $3,
 customer_name = $4,
 sale_date = $5
 WHERE (id = $1 AND item_id = $6)
-RETURNING id, item_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at
+RETURNING id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at
 `
 
 type UpdateSaleParams struct {
@@ -178,6 +234,7 @@ func (q *Queries) UpdateSale(ctx context.Context, arg UpdateSaleParams) (Sale, e
 	err := row.Scan(
 		&i.ID,
 		&i.ItemID,
+		&i.UserID,
 		&i.QuantitySold,
 		&i.SalePrice,
 		&i.SaleDate,

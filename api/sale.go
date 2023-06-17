@@ -69,7 +69,10 @@ func (server *Server) updateSale(ctx *gin.Context) {
 	itemID := uuid.MustParse(ctx.Param("id"))
 	saleID := uuid.MustParse(ctx.Param("saleID"))
 
-	initialSale, err := server.store.GetSale(ctx, saleID)
+	initialSale, err := server.store.GetSale(ctx, db.GetSaleParams{
+		ID:     saleID,
+		ItemID: itemID,
+	})
 	if err != nil {
 		errMessage := fmt.Errorf("sale not found: %v", err)
 		ctx.JSON(http.StatusNotFound, utils.ErrorResponse(errMessage.Error()))
@@ -88,7 +91,7 @@ func (server *Server) updateSale(ctx *gin.Context) {
 	}
 
 	user := ctx.MustGet("user").(userJWT)
-	itemArg := db.UpdateItemQuantityParams{
+	itemArgs := db.UpdateItemQuantityParams{
 		ID:       itemID,
 		Quantity: -quantityDiff,
 		UserID:   user.ID,
@@ -101,7 +104,7 @@ func (server *Server) updateSale(ctx *gin.Context) {
 		if err != nil {
 			return fmt.Errorf("error updating sale: %w", err)
 		}
-		_, err = query.UpdateItemQuantity(ctx, itemArg)
+		_, err = query.UpdateItemQuantity(ctx, itemArgs)
 		if err != nil {
 			return fmt.Errorf("error updating item quantity: %w", err)
 		}
@@ -130,9 +133,13 @@ func (server *Server) listSales(ctx *gin.Context) {
 }
 
 func (server *Server) getSale(ctx *gin.Context) {
+	itemID := uuid.MustParse(ctx.Param("id"))
 	saleID := uuid.MustParse(ctx.Param("saleID"))
 
-	sale, err := server.store.GetSale(ctx, saleID)
+	sale, err := server.store.GetSale(ctx, db.GetSaleParams{
+		ID:     saleID,
+		ItemID: itemID,
+	})
 	if err != nil {
 		errMessage := fmt.Errorf("sale not found: %v", err)
 		ctx.JSON(http.StatusNotFound, utils.ErrorResponse(errMessage.Error()))
@@ -146,7 +153,10 @@ func (server *Server) deleteSale(ctx *gin.Context) {
 	itemID := uuid.MustParse(ctx.Param("id"))
 	saleID := uuid.MustParse(ctx.Param("saleID"))
 
-	sale, err := server.store.GetSale(ctx, saleID)
+	sale, err := server.store.GetSale(ctx, db.GetSaleParams{
+		ID:     saleID,
+		ItemID: itemID,
+	})
 
 	args := db.DeleteSaleParams{
 		ID:     saleID,
@@ -154,7 +164,7 @@ func (server *Server) deleteSale(ctx *gin.Context) {
 	}
 
 	user := ctx.MustGet("user").(userJWT)
-	itemArg := db.UpdateItemQuantityParams{
+	itemArgs := db.UpdateItemQuantityParams{
 		ID:       itemID,
 		Quantity: sale.QuantitySold,
 		UserID:   user.ID,
@@ -166,7 +176,7 @@ func (server *Server) deleteSale(ctx *gin.Context) {
 		if err != nil {
 			return err
 		}
-		_, err = query.UpdateItemQuantity(ctx, itemArg)
+		_, err = query.UpdateItemQuantity(ctx, itemArgs)
 		return err
 	})
 
