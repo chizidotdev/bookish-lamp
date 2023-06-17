@@ -58,7 +58,7 @@ func NewServer(store *db.Store) *Server {
 	}
 
 	// Inventory
-	router.GET("/inventory", server.isAuthenticated, server.getInventoryStats)
+	router.GET("/inventory", server.isAuthenticated, server.getDashboard)
 
 	server.router = router
 	return server

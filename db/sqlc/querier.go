@@ -14,6 +14,7 @@ type Querier interface {
 	CreateItem(ctx context.Context, arg CreateItemParams) (Item, error)
 	CreateSale(ctx context.Context, arg CreateSaleParams) (Sale, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	CurrentWeekSales(ctx context.Context, userID uuid.UUID) (int32, error)
 	DeleteItem(ctx context.Context, arg DeleteItemParams) error
 	DeleteSale(ctx context.Context, arg DeleteSaleParams) error
 	GetInventoryStats(ctx context.Context, userID uuid.UUID) (GetInventoryStatsRow, error)
@@ -22,6 +23,7 @@ type Querier interface {
 	GetSale(ctx context.Context, arg GetSaleParams) (Sale, error)
 	GetSaleForUpdate(ctx context.Context, arg GetSaleForUpdateParams) (Sale, error)
 	GetUser(ctx context.Context, email string) (User, error)
+	LastWeekSales(ctx context.Context, userID uuid.UUID) (int32, error)
 	ListItems(ctx context.Context, userID uuid.UUID) ([]Item, error)
 	ListSales(ctx context.Context, itemID uuid.UUID) ([]Sale, error)
 	ListSalesByUserId(ctx context.Context, userID uuid.UUID) ([]Sale, error)

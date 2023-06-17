@@ -30,7 +30,7 @@ export default function Home() {
 
                 <Box>
                     <div className='mt-5 flex justify-center gap-4'>
-                        <Link href='/items'>
+                        <Link href='/dashboard'>
                             <Button>Dashboard</Button>
                         </Link>
                     </div>

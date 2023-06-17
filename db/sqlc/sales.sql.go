@@ -13,12 +13,12 @@ import (
 )
 
 const createSale = `-- name: CreateSale :one
-INSERT INTO sales (
-    item_id, user_id, quantity_sold, sale_price, customer_name, sale_date 
-) VALUES (
-    $1, $2, $3, $4, $5, $6
-)
-RETURNING id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at
+INSERT INTO
+    sales (item_id, user_id, quantity_sold, sale_price, customer_name, sale_date)
+VALUES
+    ($1, $2, $3, $4, $5, $6)
+RETURNING
+    id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at
 `
 
 type CreateSaleParams struct {
@@ -54,8 +54,31 @@ func (q *Queries) CreateSale(ctx context.Context, arg CreateSaleParams) (Sale, e
 	return i, err
 }
 
+const currentWeekSales = `-- name: CurrentWeekSales :one
+SELECT
+    CAST(COALESCE(SUM(quantity_sold), 0) AS INTEGER) AS total_quantity_sold
+FROM
+    sales
+WHERE
+    sale_date >= DATE_TRUNC('week', CURRENT_DATE)
+    AND sale_date < DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '1 week'
+    AND user_id = $1
+`
+
+func (q *Queries) CurrentWeekSales(ctx context.Context, userID uuid.UUID) (int32, error) {
+	row := q.db.QueryRowContext(ctx, currentWeekSales, userID)
+	var total_quantity_sold int32
+	err := row.Scan(&total_quantity_sold)
+	return total_quantity_sold, err
+}
+
 const deleteSale = `-- name: DeleteSale :exec
-DELETE FROM sales WHERE (id = $1 AND item_id = $2)
+DELETE FROM sales
+WHERE
+    (
+        id = $1
+        AND item_id = $2
+    )
 `
 
 type DeleteSaleParams struct {
@@ -69,9 +92,17 @@ func (q *Queries) DeleteSale(ctx context.Context, arg DeleteSaleParams) error {
 }
 
 const getSale = `-- name: GetSale :one
-SELECT id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at FROM sales
-WHERE (id = $1 AND item_id = $2)
-LIMIT 1
+SELECT
+    id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at
+FROM
+    sales
+WHERE
+    (
+        id = $1
+        AND item_id = $2
+    )
+LIMIT
+    1
 `
 
 type GetSaleParams struct {
@@ -97,9 +128,18 @@ func (q *Queries) GetSale(ctx context.Context, arg GetSaleParams) (Sale, error) 
 }
 
 const getSaleForUpdate = `-- name: GetSaleForUpdate :one
-SELECT id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at FROM sales
-WHERE (id = $1 AND item_id = $2)
-LIMIT 1 FOR NO KEY UPDATE
+SELECT
+    id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at
+FROM
+    sales
+WHERE
+    (
+        id = $1
+        AND item_id = $2
+    )
+LIMIT
+    1 FOR NO KEY
+UPDATE
 `
 
 type GetSaleForUpdateParams struct {
@@ -124,10 +164,33 @@ func (q *Queries) GetSaleForUpdate(ctx context.Context, arg GetSaleForUpdatePara
 	return i, err
 }
 
+const lastWeekSales = `-- name: LastWeekSales :one
+SELECT
+    CAST(COALESCE(SUM(quantity_sold), 0) AS INTEGER) AS total_quantity_sold
+FROM
+    sales
+WHERE
+    sale_date >= DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '1 week'
+    AND sale_date < DATE_TRUNC('week', CURRENT_DATE)
+    AND user_id = $1
+`
+
+func (q *Queries) LastWeekSales(ctx context.Context, userID uuid.UUID) (int32, error) {
+	row := q.db.QueryRowContext(ctx, lastWeekSales, userID)
+	var total_quantity_sold int32
+	err := row.Scan(&total_quantity_sold)
+	return total_quantity_sold, err
+}
+
 const listSales = `-- name: ListSales :many
-SELECT id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at FROM sales
-WHERE item_id = $1
-ORDER BY sale_date DESC
+SELECT
+    id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at
+FROM
+    sales
+WHERE
+    item_id = $1
+ORDER BY
+    sale_date DESC
 `
 
 func (q *Queries) ListSales(ctx context.Context, itemID uuid.UUID) ([]Sale, error) {
@@ -164,9 +227,14 @@ func (q *Queries) ListSales(ctx context.Context, itemID uuid.UUID) ([]Sale, erro
 }
 
 const listSalesByUserId = `-- name: ListSalesByUserId :many
-SELECT id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at FROM sales
-WHERE user_id = $1
-ORDER BY sale_date DESC
+SELECT
+    id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at
+FROM
+    sales
+WHERE
+    user_id = $1
+ORDER BY
+    sale_date DESC
 `
 
 func (q *Queries) ListSalesByUserId(ctx context.Context, userID uuid.UUID) ([]Sale, error) {
@@ -203,13 +271,19 @@ func (q *Queries) ListSalesByUserId(ctx context.Context, userID uuid.UUID) ([]Sa
 }
 
 const updateSale = `-- name: UpdateSale :one
-UPDATE sales 
-SET quantity_sold = $2,
-sale_price = $3,
-customer_name = $4,
-sale_date = $5
-WHERE (id = $1 AND item_id = $6)
-RETURNING id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at
+UPDATE sales
+SET
+    quantity_sold = $2,
+    sale_price = $3,
+    customer_name = $4,
+    sale_date = $5
+WHERE
+    (
+        id = $1
+        AND item_id = $6
+    )
+RETURNING
+    id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at
 `
 
 type UpdateSaleParams struct {

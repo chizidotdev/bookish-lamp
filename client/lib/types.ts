@@ -20,3 +20,11 @@ export type User = {
     id: string;
     email: string;
 };
+
+export type Inventory = {
+    total_items: number;
+    low_stock_items: number;
+    recent_sales: number;
+    pending_orders: number;
+    sales_performance: number;
+};

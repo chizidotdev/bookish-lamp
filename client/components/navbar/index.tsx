@@ -28,36 +28,12 @@ export function Navbar() {
         <nav className='fixed top-0 w-full bg-base-300 z-10'>
             <div className='navbar container mx-auto'>
                 <div className='navbar-start'>
-                    {/*<div className='dropdown'>
-                        <label tabIndex={0} className='btn btn-ghost mr-2 lg:hidden'>
-                            <CgMenuLeft size='25' />
-                        </label>
-                        <ul
-                            tabIndex={0}
-                            className='menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52'
-                        >
-                            {navbarItems.map(({ title, href }) => (
-                                <li key={href}>
-                                    <Link href={href}>{title}</Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>*/}
                     <Link href='/' className='normal-case text-xl'>
                         Copia
                     </Link>
                 </div>
 
-                {/*<div className='navbar-center hidden lg:flex'>
-                    <ul className='menu menu-horizontal px-1'>
-                        {navbarItems.map(({ title, href }) => (
-                            <li key={href}>
-                                <Link href={href}>{title}</Link>
-                            </li>
-                        ))}
-                    </ul>
-                </div>*/}
-                <div className='navbar-end gap-2'>
+                <div className='navbar-end gap-2 w-full'>
                     {user ? (
                         <>
                             <Text variant='p'>{user.email}</Text>
