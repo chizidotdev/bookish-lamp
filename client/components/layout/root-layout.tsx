@@ -11,7 +11,7 @@ export function RootLayout({ children }: { children: React.ReactNode }) {
         <div className='font-balsamiq'>
             <PageLoading />
             <Navbar />
-            <div className='max-w-7xl mx-auto px-5 sm:px-10 min-h-screen py-28'>{children}</div>
+            <div className='max-w-7xl mx-auto px-5 sm:px-10 min-h-screen py-12 md:py-28'>{children}</div>
         </div>
     );
 }

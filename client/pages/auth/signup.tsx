@@ -1,9 +1,10 @@
+import { Button } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { signup } from '~api/user';
-import { Button, Input, Text, Link, AuthLayout } from '~components';
+import { Input, Text, Link, AuthLayout } from '~components';
 
 type FormValues = {
     email: string;
@@ -26,44 +27,44 @@ export default function Page() {
 
     return (
         <AuthLayout>
-            <div className='text-center mb-5'>
-                <Text variant='h1'>Let&apos;s get started</Text>
+            <div className="text-center mb-5">
+                <Text variant="h1">Let&apos;s get started</Text>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className='form-control gap-2'>
+            <form onSubmit={handleSubmit(onSubmit)} className="form-control gap-2">
                 <Input
                     {...register('email', { required: true })}
-                    type='email'
-                    label='Email Address'
-                    placeholder='Enter your Email'
-                    autoComplete='off'
+                    type="email"
+                    label="Email Address"
+                    placeholder="Enter your Email"
+                    autoComplete="off"
                 />
                 <Input
                     {...register('password', { required: true })}
-                    type='password'
-                    label='Password'
-                    placeholder='Enter Password'
-                    autoComplete='off'
+                    type="password"
+                    label="Password"
+                    placeholder="Enter Password"
+                    autoComplete="off"
                 />
                 <Input
                     {...register('confirmPassword', { required: true })}
                     pattern={watch('password')}
-                    type='password'
-                    label='Confirm Password'
-                    placeholder='Confirm Password'
-                    autoComplete='off'
+                    type="password"
+                    label="Confirm Password"
+                    placeholder="Confirm Password"
+                    autoComplete="off"
                 />
 
-                <div className='mt-5'>
-                    <Button autoWidth loading={isLoading} type='submit'>
+                <div className="mt-5">
+                    <Button w="full" isLoading={isLoading} type="submit">
                         Get Started
                     </Button>
                 </div>
             </form>
 
-            <div className='mt-5 flex justify-center gap-1'>
+            <div className="mt-5 flex justify-center gap-1">
                 <Text>Already have an account?</Text>
-                <Link href='/auth/login'>Log In</Link>
+                <Link href="/auth/login">Log In</Link>
             </div>
         </AuthLayout>
     );

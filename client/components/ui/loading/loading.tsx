@@ -6,7 +6,7 @@ export function Loading() {
             <Bars
                 height='50'
                 width='50'
-                color='hsl(var(--s) / var(--tw-text-opacity))'
+                color='var(--chakra-colors-telegram-600)'
                 ariaLabel='bars-loading'
                 wrapperStyle={{}}
                 wrapperClass='text-base-300'
