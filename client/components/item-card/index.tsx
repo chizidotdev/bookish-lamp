@@ -27,7 +27,7 @@ export function ItemCard({ item }: ItemCardProps) {
         <div className='card bg-base-200 shadow-md'>
             <div className='card-body flex-row items-center justify-between gap-1 mx-0 py-5'>
                 <div
-                    onClick={() => push(`/items/${id}/sales`)}
+                    onClick={() => push(`/sales?itemID=${id}`)}
                     className='flex-1 flex flex-col cursor-pointer'
                 >
                     <div className='indicator'>

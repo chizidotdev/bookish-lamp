@@ -28,3 +28,18 @@ export type Inventory = {
     pending_orders: number;
     sales_performance: number;
 };
+
+export type SaleBase = {
+    quantity_sold: number;
+    sale_price: number;
+    sale_date: string;
+    customer_name: string;
+};
+
+export type Sale = SaleBase & {
+    id: string;
+    item_id: string;
+    user_id: string;
+    created_at: string;
+    updated_at: string;
+};

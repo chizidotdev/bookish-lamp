@@ -6,15 +6,15 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
     const bgColor = useColorModeValue('white', 'gray.700');
 
     return (
-        <div>
-            <div className="text-center pb-10">
+        <Box>
+            <Box paddingBlock="12" textAlign="center">
                 <AppLogo />
-            </div>
+            </Box>
 
             <Box rounded="lg" bg={bgColor} maxW="md" mx="auto" boxShadow="lg" p={8}>
                 {children}
             </Box>
-        </div>
+        </Box>
     );
 }
 

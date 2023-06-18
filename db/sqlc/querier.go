@@ -25,7 +25,7 @@ type Querier interface {
 	GetUser(ctx context.Context, email string) (User, error)
 	LastWeekSales(ctx context.Context, userID uuid.UUID) (int32, error)
 	ListItems(ctx context.Context, userID uuid.UUID) ([]Item, error)
-	ListSales(ctx context.Context, itemID uuid.UUID) ([]Sale, error)
+	ListSales(ctx context.Context, arg ListSalesParams) ([]Sale, error)
 	ListSalesByUserId(ctx context.Context, userID uuid.UUID) ([]Sale, error)
 	ListUsers(ctx context.Context) ([]User, error)
 	UpdateItem(ctx context.Context, arg UpdateItemParams) (Item, error)

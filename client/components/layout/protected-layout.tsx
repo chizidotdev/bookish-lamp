@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { useUser } from '~store/user-store';
 
-export function ItemsLayout({ children }: { children: React.ReactNode }) {
+export function ProtectedLayout({ children }: { children: React.ReactNode }) {
     const { user, isLoading } = useUser();
     const { push } = useRouter();
 
@@ -12,7 +12,7 @@ export function ItemsLayout({ children }: { children: React.ReactNode }) {
         }
     }, [user, isLoading, push]);
 
-    return <div>{children}</div>;
+    return <>{children}</>;
 }
 
-export default ItemsLayout;
+export default ProtectedLayout;

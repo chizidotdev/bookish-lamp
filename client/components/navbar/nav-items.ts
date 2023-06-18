@@ -14,6 +14,10 @@ export const NAV_ITEMS: Array<NavItem> = [
         label: 'Items',
         href: '/items',
     },
+    {
+        label: 'Sales',
+        href: '/sales',
+    },
     // {
     //     label: 'Inspiration',
     //     children: [

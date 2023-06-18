@@ -77,17 +77,17 @@ DELETE FROM sales
 WHERE
     (
         id = $1
-        AND item_id = $2
+        AND user_id = $2
     )
 `
 
 type DeleteSaleParams struct {
 	ID     uuid.UUID `json:"id"`
-	ItemID uuid.UUID `json:"item_id"`
+	UserID uuid.UUID `json:"user_id"`
 }
 
 func (q *Queries) DeleteSale(ctx context.Context, arg DeleteSaleParams) error {
-	_, err := q.db.ExecContext(ctx, deleteSale, arg.ID, arg.ItemID)
+	_, err := q.db.ExecContext(ctx, deleteSale, arg.ID, arg.UserID)
 	return err
 }
 
@@ -99,7 +99,7 @@ FROM
 WHERE
     (
         id = $1
-        AND item_id = $2
+        AND user_id = $2
     )
 LIMIT
     1
@@ -107,11 +107,11 @@ LIMIT
 
 type GetSaleParams struct {
 	ID     uuid.UUID `json:"id"`
-	ItemID uuid.UUID `json:"item_id"`
+	UserID uuid.UUID `json:"user_id"`
 }
 
 func (q *Queries) GetSale(ctx context.Context, arg GetSaleParams) (Sale, error) {
-	row := q.db.QueryRowContext(ctx, getSale, arg.ID, arg.ItemID)
+	row := q.db.QueryRowContext(ctx, getSale, arg.ID, arg.UserID)
 	var i Sale
 	err := row.Scan(
 		&i.ID,
@@ -135,7 +135,7 @@ FROM
 WHERE
     (
         id = $1
-        AND item_id = $2
+        AND user_id = $2
     )
 LIMIT
     1 FOR NO KEY
@@ -144,11 +144,11 @@ UPDATE
 
 type GetSaleForUpdateParams struct {
 	ID     uuid.UUID `json:"id"`
-	ItemID uuid.UUID `json:"item_id"`
+	UserID uuid.UUID `json:"user_id"`
 }
 
 func (q *Queries) GetSaleForUpdate(ctx context.Context, arg GetSaleForUpdateParams) (Sale, error) {
-	row := q.db.QueryRowContext(ctx, getSaleForUpdate, arg.ID, arg.ItemID)
+	row := q.db.QueryRowContext(ctx, getSaleForUpdate, arg.ID, arg.UserID)
 	var i Sale
 	err := row.Scan(
 		&i.ID,
@@ -189,12 +189,18 @@ FROM
     sales
 WHERE
     item_id = $1
+    AND user_id = $2
 ORDER BY
     sale_date DESC
 `
 
-func (q *Queries) ListSales(ctx context.Context, itemID uuid.UUID) ([]Sale, error) {
-	rows, err := q.db.QueryContext(ctx, listSales, itemID)
+type ListSalesParams struct {
+	ItemID uuid.UUID `json:"item_id"`
+	UserID uuid.UUID `json:"user_id"`
+}
+
+func (q *Queries) ListSales(ctx context.Context, arg ListSalesParams) ([]Sale, error) {
+	rows, err := q.db.QueryContext(ctx, listSales, arg.ItemID, arg.UserID)
 	if err != nil {
 		return nil, err
 	}
@@ -280,7 +286,7 @@ SET
 WHERE
     (
         id = $1
-        AND item_id = $6
+        AND user_id = $6
     )
 RETURNING
     id, item_id, user_id, quantity_sold, sale_price, sale_date, customer_name, created_at, updated_at
@@ -292,7 +298,7 @@ type UpdateSaleParams struct {
 	SalePrice    float32   `json:"sale_price"`
 	CustomerName string    `json:"customer_name"`
 	SaleDate     time.Time `json:"sale_date"`
-	ItemID       uuid.UUID `json:"item_id"`
+	UserID       uuid.UUID `json:"user_id"`
 }
 
 func (q *Queries) UpdateSale(ctx context.Context, arg UpdateSaleParams) (Sale, error) {
@@ -302,7 +308,7 @@ func (q *Queries) UpdateSale(ctx context.Context, arg UpdateSaleParams) (Sale, e
 		arg.SalePrice,
 		arg.CustomerName,
 		arg.SaleDate,
-		arg.ItemID,
+		arg.UserID,
 	)
 	var i Sale
 	err := row.Scan(

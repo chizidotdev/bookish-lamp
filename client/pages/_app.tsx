@@ -12,6 +12,7 @@ const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
             refetchOnWindowFocus: false,
+        staleTime: 1000 * 60 * 5, // 5 minutes
         },
     },
 });
@@ -21,7 +22,7 @@ const queryCache = new QueryCache()
 const MyApp: AppType = ({ Component, pageProps }) => {
     // ReactGA.initialize("G-FGNLC0J6Q3");
 
-    console.log(queryCache)
+    console.log(queryCache.findAll())
 
     return (
         <QueryClientProvider client={queryClient}>

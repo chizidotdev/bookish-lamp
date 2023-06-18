@@ -11,7 +11,6 @@ export function PageLoading() {
         router.events.on('routeChangeComplete', () => setTimeout(() => setLoading(false), 500));
         router.events.on('routeChangeError', () => setTimeout(() => setLoading(false), 500));
     }, [loading, router.asPath, router.events]);
-    return null
 
     return (
         <>

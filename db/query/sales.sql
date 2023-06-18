@@ -14,7 +14,7 @@ FROM
 WHERE
     (
         id = $1
-        AND item_id = $2
+        AND user_id = $2
     )
 LIMIT
     1;
@@ -27,7 +27,7 @@ FROM
 WHERE
     (
         id = $1
-        AND item_id = $2
+        AND user_id = $2
     )
 LIMIT
     1 FOR NO KEY
@@ -40,6 +40,7 @@ FROM
     sales
 WHERE
     item_id = $1
+    AND user_id = $2
 ORDER BY
     sale_date DESC;
 
@@ -63,7 +64,7 @@ SET
 WHERE
     (
         id = $1
-        AND item_id = $6
+        AND user_id = $6
     )
 RETURNING
     *;
@@ -73,7 +74,7 @@ DELETE FROM sales
 WHERE
     (
         id = $1
-        AND item_id = $2
+        AND user_id = $2
     );
 
 -- name: CurrentWeekSales :one

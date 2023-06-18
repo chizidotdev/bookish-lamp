@@ -1,19 +1,15 @@
-import Link from 'next/link';
-import React from 'react';
-import ItemCard from '~components/item-card';
-import { useQuery } from 'react-query';
-import { getItems } from '~api/item';
-import { ItemsLayout, Text } from '~components';
-import { IoIosAdd } from 'react-icons/io';
 import { Button } from '@chakra-ui/react';
+import Link from 'next/link';
+import { IoIosAdd } from 'react-icons/io';
+import { ProtectedLayout, Text } from '~components';
+import ItemCard from '~components/item-card';
+import { useGetItems } from '~hooks/items';
 
 export default function Items() {
-    const { data: items } = useQuery('items', {
-        queryFn: getItems,
-    });
+    const { data: items } = useGetItems();
 
     return (
-        <ItemsLayout>
+        <ProtectedLayout>
             <div className="flex mb-5 justify-between items-center">
                 <Text variant="h2">Items</Text>
                 <Link href="/items/new">
@@ -25,16 +21,6 @@ export default function Items() {
                     Boolean(items.length) &&
                     items.map((item) => <ItemCard key={item.id} item={item} />)}
             </div>
-
-            {/*<div className='mt-5 flex justify-end btn-group'>
-                <Link href={decrementPage()} className='btn'>
-                    «
-                </Link>
-                <button className='btn btn-disabled'>Page {pageID}</button>
-                <Link href={incrementPage()} className='btn'>
-                    »
-                </Link>
-            </div>*/}
-        </ItemsLayout>
+        </ProtectedLayout>
     );
 }

@@ -1,10 +1,8 @@
-import { Button } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
-import React from 'react';
+import { Button, useToast } from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { login } from '~api/user';
-import { Input, Text, Link, AuthLayout } from '~components';
+import { AuthLayout, Input, Link, Text } from '~components';
 
 type FormValues = {
     email: string;
@@ -12,9 +10,24 @@ type FormValues = {
 };
 
 export default function Page() {
-    const { push } = useRouter();
+    const toast = useToast();
     const { mutate, isLoading } = useMutation(login, {
-        onSuccess: (data) => push('/items'),
+        onSuccess: (data) => {
+            toast({
+                description: 'Login successful!',
+                status: 'success',
+                duration: 3000,
+            });
+            window.location.href = '/dashboard';
+        },
+        onError: (error) => {
+            console.log(error)
+            toast({
+                description: error.response.data.error,
+                status: 'error',
+                duration: 3000,
+            });
+        }
     });
     const { register, handleSubmit, formState } = useForm<FormValues>();
 

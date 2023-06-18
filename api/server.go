@@ -46,15 +46,22 @@ func NewServer(store *db.Store) *Server {
 		items.PUT("/:id", server.updateItem)
 		items.DELETE("/:id", server.deleteItem)
 
-		// Sales
-		sales := items.Group("/:id/sales")
+		// Item Sales
+		itemSales := items.Group("/:id/sales")
 		{
-			sales.POST("", server.createSale)
-			sales.GET("", server.listSales)
-			sales.GET("/:saleID", server.getSale)
-			sales.PUT("/:saleID", server.updateSale)
-			sales.DELETE("/:saleID", server.deleteSale)
+			itemSales.POST("", server.createSale)
+			itemSales.GET("", server.listSales)
 		}
+	}
+
+	// Sales
+	sales := router.Group("/sales")
+	sales.Use(server.isAuthenticated)
+	{
+		sales.GET("", server.listAllSales)
+		sales.GET("/:saleID", server.getSale)
+		sales.PUT("/:saleID", server.updateSale)
+		sales.DELETE("/:saleID", server.deleteSale)
 	}
 
 	// Inventory

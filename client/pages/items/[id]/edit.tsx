@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { getItemById, updateItem } from '~api/item';
-import { Button, Input, ItemsLayout, Loading, Text } from '~components';
+import { Button, Input, ProtectedLayout, Loading, Text } from '~components';
 import { useRouter } from 'next/router';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { ItemBase } from '~lib/types';
@@ -34,7 +34,7 @@ export default function EditItem() {
     }
 
     return (
-        <ItemsLayout>
+        <ProtectedLayout>
             <div className='mb-5'>
                 <Text variant='h2'>New Item</Text>
             </div>
@@ -71,6 +71,6 @@ export default function EditItem() {
                     <Button onClick={back}>Cancel</Button>
                 </div>
             </form>
-        </ItemsLayout>
+        </ProtectedLayout>
     );
 }
