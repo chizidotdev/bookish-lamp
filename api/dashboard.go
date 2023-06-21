@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"math"
 	"net/http"
 
 	"github.com/chizidotdev/copia/utils"
@@ -9,11 +10,11 @@ import (
 )
 
 type DashboardInfo struct {
-	TotalItems       int64 `json:"total_items"`
-	LowStockItems    int64 `json:"low_stock_items"`
-	RecentSales      int64 `json:"recent_sales"`
-	PendingOrders    int64 `json:"pending_orders"`
-	SalesPerformance int64 `json:"sales_performance"`
+	TotalItems       int64   `json:"total_items"`
+	LowStockItems    int64   `json:"low_stock_items"`
+	RecentSales      int64   `json:"recent_sales"`
+	PendingOrders    int64   `json:"pending_orders"`
+	SalesPerformance float64 `json:"sales_performance"`
 }
 
 func (server *Server) getDashboard(ctx *gin.Context) {
@@ -53,8 +54,8 @@ func (server *Server) getDashboard(ctx *gin.Context) {
 			dashboard.SalesPerformance = 100
 		}
 	} else {
-		increase := currWeekSale - lastWeekSales
-		dashboard.SalesPerformance = int64(increase / lastWeekSales * 100)
+		salesPerformance := utils.CalcPercentageDiff(lastWeekSales, currWeekSale)
+		dashboard.SalesPerformance = math.Floor(salesPerformance)
 	}
 
 	ctx.JSON(http.StatusOK, dashboard)

@@ -1,37 +1,28 @@
-import {
-    Button,
-    Table,
-    TableCaption,
-    TableContainer,
-    Tbody,
-    Td,
-    Th,
-    Thead,
-    Tr,
-} from '@chakra-ui/react';
+import {Button, Flex, Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr,} from '@chakra-ui/react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { IoIosAdd } from 'react-icons/io';
-import { Loading } from '~components';
-import { useGetSales } from '~hooks/sales';
-import { formatDate } from '~lib/utils';
+import {useRouter} from 'next/router';
+import {IoIosAdd} from 'react-icons/io';
+import {Loading, Text} from '~components';
+import {useGetSales} from '~hooks/sales';
+import {formatDate} from '~lib/utils';
 
 export default function Sales() {
-    const { query, push } = useRouter();
+    const {query, push} = useRouter();
     const itemID = query.itemID;
     const sales = useGetSales(itemID as string);
 
     if (sales.isLoading) {
-        return <Loading />;
+        return <Loading/>;
     }
 
     return (
         <>
-            <Link href={{ pathname: '/sales/new', query: { itemID } }}>
-                <Button mb={5} rightIcon={<IoIosAdd size={20} />}>
-                    Add
-                </Button>
-            </Link>
+            <Flex mb={5} justify='space-between' align='center'>
+                <Text variant="h2">Sales</Text>
+                <Link href={{pathname: '/sales/new', query: {itemID}}}>
+                    <Button rightIcon={<IoIosAdd size={20}/>}>Add</Button>
+                </Link>
+            </Flex>
 
             <TableContainer>
                 <Table variant="simple">
@@ -39,7 +30,7 @@ export default function Sales() {
                     <Thead>
                         <Tr>
                             <Th>Date</Th>
-                            <Th isNumeric>Quantity</Th>
+                            <Th isNumeric>Qty</Th>
                             <Th isNumeric>Price(₦)</Th>
                         </Tr>
                     </Thead>

@@ -26,9 +26,11 @@ export default function NewSale() {
         <ProtectedLayout>
             <Flex justify="space-between" mb={5}>
                 <Text variant="h2">New Sale</Text>
-                <Link href={`/items/${itemID}`}>
-                    <Button>View Item</Button>
-                </Link>
+                {item.data && (
+                    <Link href={`/items/${itemID}`}>
+                        <Button>View Item</Button>
+                    </Link>
+                )}
             </Flex>
 
             <form onSubmit={handleSubmit(onSubmit)} className="form-control gap-2 max-w-2xl">

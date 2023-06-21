@@ -21,7 +21,7 @@ export default function Dashboard() {
                 <DashboardCard title="Total Items" value={data.total_items} />
                 <DashboardCard title="Low Stock Items" value={data.low_stock_items} />
                 <DashboardCard title="Sales Performance" value={`${data.sales_performance}%`} />
-                <DashboardCard title="Pending Orders" value={data.pending_orders} />
+                {/*<DashboardCard title="Pending Orders" value={data.pending_orders} />*/}
             </Grid>
         </>
     );

@@ -8,6 +8,6 @@ export const customTheme = extendTheme(
         },
     },
     withDefaultColorScheme({
-        colorScheme: 'telegram',
+        colorScheme: 'blue',
     })
 );
