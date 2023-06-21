@@ -5,8 +5,7 @@ func CalcPercentageDiff(a, b int32) float64 {
 	newValue := float64(b)
 
 	difference := newValue - oldValue
-	average := (newValue + oldValue) / 2
-	percentage := (difference / average) * 100
+	percentage := difference / oldValue * 100
 
 	return percentage
 }

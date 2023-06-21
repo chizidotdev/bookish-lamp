@@ -1,16 +1,15 @@
-import { Box, Card, CardBody, Flex, Grid, Heading, Image, Text } from '@chakra-ui/react';
-import { useQuery } from 'react-query';
-import { getInventory } from '~api/inventory';
-import { Loading } from '~components';
-import { Inventory } from '~lib/types';
+import {Box, Card, CardBody, Grid, Heading, Image, Stat, StatArrow, StatLabel, StatNumber} from '@chakra-ui/react';
+import {useQuery} from 'react-query';
+import {getInventory} from '~api/inventory';
+import {Loading} from '~components';
 
 export default function Dashboard() {
-    const { data, isLoading } = useQuery(['inventory'], {
+    const {data, isLoading} = useQuery(['inventory'], {
         queryFn: getInventory,
     });
 
-    if (isLoading) return <Loading />;
-    if (!data) return <Loading />;
+    if (isLoading) return <Loading/>;
+    if (!data) return <Loading/>;
 
     return (
         <>
@@ -18,27 +17,50 @@ export default function Dashboard() {
                 Dashboard
             </Heading>
             <Grid gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap="5">
-                <DashboardCard title="Total Items" value={data.total_items} />
-                <DashboardCard title="Low Stock Items" value={data.low_stock_items} />
-                <DashboardCard title="Sales Performance" value={`${data.sales_performance}%`} />
+                <DashboardCard title="Total Items" value={data.total_items}/>
+                <DashboardCard title="Low Stock Items" value={data.low_stock_items}/>
+                <DashboardStatCard title="Sales Performance" value={data.sales_performance}/>
                 {/*<DashboardCard title="Pending Orders" value={data.pending_orders} />*/}
             </Grid>
         </>
     );
 }
 
-function DashboardCard({ title, value }: { title: string; value: string | number }) {
+function DashboardCard({title, value}: { title: string; value: string | number }) {
     return (
         <Card direction="row" variant="filled">
             <CardBody>
-                <Box marginBlock="auto">
-                    <Text py="2">{title}</Text>
-                    <Heading size="md">{value}</Heading>
-                </Box>
+                <Stat>
+                    <StatLabel>{title}</StatLabel>
+                    <StatNumber>{value}</StatNumber>
+                </Stat>
             </CardBody>
 
             <Box marginBlock="auto" mr="5">
-                <Image objectFit="cover" w="10" src="/dashboard/chart.svg" alt="Caffe Latte" />
+                <Image objectFit="cover" w="10" src="/dashboard/chart.svg" alt="Caffe Latte"/>
+            </Box>
+        </Card>
+    );
+}
+
+function DashboardStatCard({title, value}: { title: string; value: number }) {
+    return (
+        <Card direction="row" variant="filled">
+            <CardBody>
+                <Stat>
+                    <StatLabel>{title}</StatLabel>
+                    <StatNumber>
+                        <StatArrow type={value < 0 ? 'decrease' : 'increase'}/>
+                        {value}%
+                    </StatNumber>
+                    {/*<StatHelpText>*/}
+                    {/*    9.05%*/}
+                    {/*</StatHelpText>*/}
+                </Stat>
+            </CardBody>
+
+            <Box marginBlock="auto" mr="5">
+                <Image objectFit="cover" w="10" src="/dashboard/chart.svg" alt="Caffe Latte"/>
             </Box>
         </Card>
     );
