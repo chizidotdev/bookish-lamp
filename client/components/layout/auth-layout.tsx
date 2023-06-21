@@ -1,17 +1,20 @@
+import { Box, useColorModeValue } from '@chakra-ui/react';
 import React from 'react';
 import AppLogo from '~components/app-logo';
 
 export function AuthLayout({ children }: { children: React.ReactNode }) {
-    return (
-        <div>
-            <div className='text-center pb-10'>
-                <AppLogo />
-            </div>
+    const bgColor = useColorModeValue('white', 'gray.700');
 
-            <div className='max-w-md mx-auto bg-base-100 px-3 sm:px-10 py-12 rounded-2xl'>
+    return (
+        <Box>
+            <Box paddingBlock="12" textAlign="center">
+                <AppLogo />
+            </Box>
+
+            <Box rounded="lg" bg={bgColor} maxW="md" mx="auto" boxShadow="lg" p={8}>
                 {children}
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
 }
 

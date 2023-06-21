@@ -46,7 +46,7 @@ func TestGetSale(t *testing.T) {
 	createdSale := createRandomSale(t, item.ID)
 	args := GetSaleParams{
 		ID:     createdSale.ID,
-		ItemID: item.ID,
+		UserID: user.ID,
 	}
 	sale, err := testQueries.GetSale(context.Background(), args)
 
@@ -73,7 +73,7 @@ func TestUpdateSale(t *testing.T) {
 		SalePrice:    utils.RandomMoney(),
 		CustomerName: utils.RandomTitle(),
 		SaleDate:     time.Now(),
-		ItemID:       item.ID,
+		UserID:       user.ID,
 	}
 
 	updatedSale, err := testQueries.UpdateSale(context.Background(), arg)
@@ -96,13 +96,13 @@ func TestDeleteSale(t *testing.T) {
 	sale := createRandomSale(t, item.ID)
 	err := testQueries.DeleteSale(context.Background(), DeleteSaleParams{
 		ID:     sale.ID,
-		ItemID: item.ID,
+		UserID: user.ID,
 	})
 	require.NoError(t, err)
 
 	args := GetSaleParams{
 		ID:     sale.ID,
-		ItemID: item.ID,
+		UserID: user.ID,
 	}
 	deletedSale, err := testQueries.GetSale(context.Background(), args)
 	require.Error(t, err)

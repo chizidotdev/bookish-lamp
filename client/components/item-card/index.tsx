@@ -1,62 +1,65 @@
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { IoMdTrash } from 'react-icons/io';
-import { FiEdit } from 'react-icons/fi';
-import type { Item } from '~lib/types';
-import { useMutation, useQueryClient } from 'react-query';
-import { deleteItem } from '~api/item';
-import { Button } from '~components/ui';
+import {useRouter} from 'next/navigation';
+import {IoMdTrash} from 'react-icons/io';
+import {FiEdit} from 'react-icons/fi';
+import type {Item} from '~lib/types';
+import {useMutation, useQueryClient} from 'react-query';
+import {deleteItem} from '~api/item';
+import {Box, Button, ButtonGroup, Card, CardBody, Tag} from "@chakra-ui/react";
 
 export type ItemCardProps = {
     item: Item;
 };
 
-export function ItemCard({ item }: ItemCardProps) {
-    const { push } = useRouter();
+export function ItemCard({item}: ItemCardProps) {
+    const {push} = useRouter();
     const queryClient = useQueryClient();
-    const { mutate } = useMutation(deleteItem, {
+    const {mutate} = useMutation(deleteItem, {
         onSuccess: () => {
             push('/items');
             queryClient.invalidateQueries('items');
         },
     });
 
-    const { id, title, buying_price, selling_price, quantity } = item;
+    const {id, title, buying_price, selling_price, quantity} = item;
 
     return (
-        <div className='card bg-base-200 shadow-md'>
-            <div className='card-body flex-row items-center justify-between gap-1 mx-0 py-5'>
-                <div
-                    onClick={() => push(`/items/${id}/sales`)}
-                    className='flex-1 flex flex-col cursor-pointer'
+        <Card>
+            <CardBody display='flex' flexDir='row' alignItems='center' justifyContent='space-between' gap={1} py={5}>
+                <Box
+                    onClick={() => push(`/sales?itemID=${id}`)}
+                    flex={1}
+                    display='flex'
+                    flexDir='column'
+                    cursor='pointer'
                 >
                     <div className='indicator'>
                         <span
                             className={`indicator-item indicator-start badge badge-sm ${
-                                !quantity ? 'badge-error' : 'badge-secondary'
+                                quantity <= 5 ? 'badge-error' : 'badge-ghost'
                             }`}
                         >
                             {quantity}
                         </span>
                         <h2 className='card-title text-lg'>{title}</h2>
                     </div>
-                    <div className='flex gap-2 mt-1'>
-                        <div className='badge'>₦{buying_price}</div>
-                        <div className='badge badge-primary'>₦{selling_price}</div>
-                    </div>
-                </div>
-                <div className='card-actions flex-row gap-4'>
+                    <Tag width='min-content'>
+                        ₦{selling_price}
+                    </Tag>
+                </Box>
+
+                <ButtonGroup>
                     <Link href={`/items/${id}/edit`}>
-                        <Button>
-                            <FiEdit />
+                        <Button variant='ghost'>
+                            <FiEdit/>
                         </Button>
                     </Link>
-                    <Button onClick={() => mutate(id)}>
-                        <IoMdTrash className='text-error' />
+                    <Button variant='ghost' onClick={() => mutate(id)}>
+                        <IoMdTrash className='text-error'/>
                     </Button>
-                </div>
-            </div>
-        </div>
+                </ButtonGroup>
+            </CardBody>
+        </Card>
     );
 }
 

@@ -25,7 +25,9 @@ func (server *Server) createSale(ctx *gin.Context) {
 		return
 	}
 
+	user := ctx.MustGet("user").(userJWT)
 	args := db.CreateSaleParams{
+		UserID:       user.ID,
 		ItemID:       uuid.MustParse(ctx.Param("id")),
 		QuantitySold: req.QuantitySold,
 		SalePrice:    req.SalePrice,
@@ -33,7 +35,6 @@ func (server *Server) createSale(ctx *gin.Context) {
 		SaleDate:     req.SaleDate,
 	}
 
-	user := ctx.MustGet("user").(userJWT)
 	itemArg := db.UpdateItemQuantityParams{
 		ID:       args.ItemID,
 		Quantity: -args.QuantitySold,
@@ -66,12 +67,12 @@ func (server *Server) updateSale(ctx *gin.Context) {
 		return
 	}
 
-	itemID := uuid.MustParse(ctx.Param("id"))
+	user := ctx.MustGet("user").(userJWT)
 	saleID := uuid.MustParse(ctx.Param("saleID"))
 
 	initialSale, err := server.store.GetSale(ctx, db.GetSaleParams{
 		ID:     saleID,
-		ItemID: itemID,
+		UserID: user.ID,
 	})
 	if err != nil {
 		errMessage := fmt.Errorf("sale not found: %v", err)
@@ -87,12 +88,11 @@ func (server *Server) updateSale(ctx *gin.Context) {
 		SalePrice:    req.SalePrice,
 		CustomerName: req.CustomerName,
 		SaleDate:     req.SaleDate,
-		ItemID:       itemID,
+		UserID:       user.ID,
 	}
 
-	user := ctx.MustGet("user").(userJWT)
 	itemArgs := db.UpdateItemQuantityParams{
-		ID:       itemID,
+		ID:       initialSale.ItemID,
 		Quantity: -quantityDiff,
 		UserID:   user.ID,
 	}
@@ -120,10 +120,26 @@ func (server *Server) updateSale(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, sale)
 }
 
+func (server *Server) listAllSales(ctx *gin.Context) {
+	user := ctx.MustGet("user").(userJWT)
+
+	sales, err := server.store.ListSalesByUserId(ctx, user.ID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, sales)
+}
+
 func (server *Server) listSales(ctx *gin.Context) {
+	user := ctx.MustGet("user").(userJWT)
 	ItemID := uuid.MustParse(ctx.Param("id"))
 
-	sales, err := server.store.ListSales(ctx, ItemID)
+	sales, err := server.store.ListSales(ctx, db.ListSalesParams{
+		ItemID: ItemID,
+		UserID: user.ID,
+	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
 		return
@@ -133,12 +149,12 @@ func (server *Server) listSales(ctx *gin.Context) {
 }
 
 func (server *Server) getSale(ctx *gin.Context) {
-	itemID := uuid.MustParse(ctx.Param("id"))
+	user := ctx.MustGet("user").(userJWT)
 	saleID := uuid.MustParse(ctx.Param("saleID"))
 
 	sale, err := server.store.GetSale(ctx, db.GetSaleParams{
 		ID:     saleID,
-		ItemID: itemID,
+		UserID: user.ID,
 	})
 	if err != nil {
 		errMessage := fmt.Errorf("sale not found: %v", err)
@@ -150,22 +166,26 @@ func (server *Server) getSale(ctx *gin.Context) {
 }
 
 func (server *Server) deleteSale(ctx *gin.Context) {
-	itemID := uuid.MustParse(ctx.Param("id"))
+	user := ctx.MustGet("user").(userJWT)
 	saleID := uuid.MustParse(ctx.Param("saleID"))
 
 	sale, err := server.store.GetSale(ctx, db.GetSaleParams{
 		ID:     saleID,
-		ItemID: itemID,
+		UserID: user.ID,
 	})
+	if err != nil {
+		errMessage := fmt.Errorf("sale not found: %v", err)
+		ctx.JSON(http.StatusNotFound, utils.ErrorResponse(errMessage.Error()))
+		return
+	}
 
 	args := db.DeleteSaleParams{
 		ID:     saleID,
-		ItemID: itemID,
+		UserID: user.ID,
 	}
 
-	user := ctx.MustGet("user").(userJWT)
 	itemArgs := db.UpdateItemQuantityParams{
-		ID:       itemID,
+		ID:       sale.ItemID,
 		Quantity: sale.QuantitySold,
 		UserID:   user.ID,
 	}

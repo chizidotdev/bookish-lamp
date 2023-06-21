@@ -9,7 +9,8 @@ export const getItems = async (): Promise<Item[]> => {
     return data;
 };
 
-export const getItemById = async (id: string): Promise<Item> => {
+export const getItemById = async (id: string): Promise<Item | undefined> => {
+    if (!id) return;
     const response = await fetch(`${BASE_URL}/items/${id}`);
     const data = await response.json();
     return data;
@@ -38,7 +39,7 @@ export const deleteItem = async (id: string): Promise<string> => {
     const response = await fetch(`${BASE_URL}/items/${id}`, {
         method: 'DELETE',
     });
-    console.log('response', response)
+    console.log('response', response);
     const data = await response.json();
     return data;
 };

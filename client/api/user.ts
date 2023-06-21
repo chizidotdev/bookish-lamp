@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { BASE_URL } from '~lib/constants';
 import { User } from '~lib/types';
 
@@ -26,16 +27,25 @@ export const signup = async ({ email, password }: LoginRequest): Promise<string>
 };
 
 export const login = async ({ email, password }: LoginRequest): Promise<{ token: string }> => {
-    const response = await fetch(`${BASE_URL}/login`, {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-    });
-    const data = await response.json();
+    // const response = await fetch(`${BASE_URL}/login`, {
+    //     method: 'POST',
+    //     body: JSON.stringify({ email, password }),
+    // });
+    const response = await axios.post(
+        `${BASE_URL}/login`,
+        { email, password },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+        }
+    );
     if (response.status === 200) {
-        localStorage.setItem('token', data.token);
+        localStorage.setItem('token', response.data.token);
         window.dispatchEvent(new Event('storage'));
     }
-    return data;
+    return response.data;
 };
 
 export const logout = async (): Promise<any> => {

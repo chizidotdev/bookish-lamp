@@ -13,18 +13,49 @@ import (
 
 const getInventoryStats = `-- name: GetInventoryStats :one
 SELECT
-  (SELECT COUNT(*) FROM items WHERE items.user_id = $1) AS total_items,
-  (SELECT items.id FROM items WHERE items.user_id = $1 AND items.quantity <= 5) AS low_stock_items,
-  (SELECT COUNT(*) FROM sales WHERE sales.user_id = $1 LIMIT 10) AS recent_sales,
-  -- (SELECT SUM(sales.quantity_sold) FROM sales WHERE sales.user_id = $1) AS sales_performance,
-  (SELECT COUNT(*) FROM orders WHERE orders.user_id = $1 AND orders.status = 'Pending') AS pending_orders
+  (
+    SELECT
+      COUNT(*)
+    FROM
+      items
+    WHERE
+      items.user_id = $1
+  ) AS total_items,
+  (
+    SELECT
+      COUNT(*)
+    FROM
+      items
+    WHERE
+      items.user_id = $1
+      AND items.quantity <= 5
+  ) AS low_stock_items,
+  (
+    SELECT
+      COUNT(*)
+    FROM
+      sales
+    WHERE
+      sales.user_id = $1
+    LIMIT
+      10
+  ) AS recent_sales,
+  (
+    SELECT
+      COUNT(*)
+    FROM
+      orders
+    WHERE
+      orders.user_id = $1
+      AND orders.status = 'Pending'
+  ) AS pending_orders
 `
 
 type GetInventoryStatsRow struct {
-	TotalItems    int64     `json:"total_items"`
-	LowStockItems uuid.UUID `json:"low_stock_items"`
-	RecentSales   int64     `json:"recent_sales"`
-	PendingOrders int64     `json:"pending_orders"`
+	TotalItems    int64 `json:"total_items"`
+	LowStockItems int64 `json:"low_stock_items"`
+	RecentSales   int64 `json:"recent_sales"`
+	PendingOrders int64 `json:"pending_orders"`
 }
 
 func (q *Queries) GetInventoryStats(ctx context.Context, userID uuid.UUID) (GetInventoryStatsRow, error) {
