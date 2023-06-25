@@ -6,6 +6,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Input, Loading, ProtectedLayout, Text } from '~components';
 import { useGetSaleById, useUpdateSale } from '~hooks/sales';
 import { SaleBase } from '~lib/types';
+import {getDateInput} from "~lib/utils";
 
 export default function EditSale() {
     const { back, query } = useRouter();
@@ -21,6 +22,7 @@ export default function EditSale() {
             setValue('quantity_sold', sale.data?.quantity_sold);
             setValue('sale_price', sale.data?.sale_price);
             setValue('customer_name', sale.data?.customer_name);
+            setValue('sale_date', getDateInput(sale.data?.sale_date))
         }
     }, [sale.status, sale.data, setValue, sale.isSuccess]);
 

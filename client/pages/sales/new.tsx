@@ -6,16 +6,24 @@ import { Input, Loading, ProtectedLayout, Text } from '~components';
 import { useGetItemById } from '~hooks/items';
 import { useCreateSale } from '~hooks/sales';
 import { SaleBase } from '~lib/types';
+import { SelectSalesItem, useSelectSalesItem } from '~modules/sales';
+import {getDateInput} from "~lib/utils";
 
 export default function NewSale() {
     const { back, query } = useRouter();
     const itemID = query.itemID as string;
     const createSale = useCreateSale();
     const item = useGetItemById(itemID);
+    const selectSalesItem = useSelectSalesItem();
 
     const { register, handleSubmit } = useForm<SaleBase>();
     const onSubmit: SubmitHandler<SaleBase> = (data) => {
-        createSale.mutate({ ...data, itemID });
+        createSale.mutate({
+            ...data,
+            itemID: Boolean(itemID)
+                ? itemID
+                : selectSalesItem.selected.id,
+        });
     };
 
     if (item.isLoading) {
@@ -33,9 +41,21 @@ export default function NewSale() {
                 )}
             </Flex>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="form-control gap-2 max-w-2xl">
-                <Input value={item.data?.title} readOnly label="Item" />
-                <div className="flex gap-4">
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="form-control gap-2 max-w-2xl"
+            >
+                {item.data?.title ? (
+                    <Input
+                        value={item.data?.title}
+                        readOnly
+                        label="Item"
+                    />
+                ) : (
+                    <SelectSalesItem {...selectSalesItem} />
+                )}
+
+                <Flex gap={4}>
                     <Input
                         {...register('quantity_sold', {
                             required: true,
@@ -47,25 +67,35 @@ export default function NewSale() {
                         placeholder="Quantity Sold"
                     />
                     <Input
-                        {...register('sale_price', { required: true, valueAsNumber: true })}
+                        {...register('sale_price', {
+                            required: true,
+                            valueAsNumber: true,
+                        })}
                         type="number"
                         label="Sale Price"
                         placeholder="Sale Price"
                     />
-                </div>
+                </Flex>
                 <Input
                     {...register('customer_name')}
                     label="Customer Name"
                     placeholder="Customer Name"
                 />
                 <Input
-                    {...register('sale_date', { required: true, valueAsDate: true })}
+                    {...register('sale_date', {
+                        required: true,
+                        valueAsDate: true,
+                    })}
+                    defaultValue={getDateInput(new Date)}
                     label="Date Sold"
                     type="date"
                 />
 
                 <ButtonGroup mt={4}>
-                    <Button isLoading={createSale.isLoading} type="submit">
+                    <Button
+                        isLoading={createSale.isLoading}
+                        type="submit"
+                    >
                         Save
                     </Button>
                     <Button variant="outline" onClick={back}>

@@ -29,7 +29,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
         <Stack spacing={4} onClick={children && onToggle}>
             <Flex
                 py={2}
-                as={NextLink}
+                as={href ? NextLink : undefined}
                 href={href}
                 justify={'space-between'}
                 align={'center'}
@@ -62,7 +62,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
                 >
                     {children &&
                         children.map((child) => (
-                            <NextLink key={child.href} href={child.href}>
+                            <NextLink key={child.href} href={child.href!}>
                                 <Box py={2}>{child.label}</Box>
                             </NextLink>
                         ))}
