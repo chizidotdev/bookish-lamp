@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"os"
+	"github.com/spf13/viper"
 )
 
 // Config stores all the configuration for the application
@@ -22,8 +22,17 @@ var EnvVars Config
 
 // LoadConfig loads the configuration from the config file or env variable
 func LoadConfig() {
-	EnvVars.DBDriver = os.Getenv("DB_DRIVER")
-	EnvVars.DBSource = os.Getenv("DB_SOURCE")
-	EnvVars.ServerAddress = os.Getenv("SERVER_ADDRESS")
-	EnvVars.AuthSecret = os.Getenv("AUTH_SECRET")
+	//EnvVars.DBDriver = os.Getenv("DB_DRIVER")
+	//EnvVars.DBSource = os.Getenv("DB_SOURCE")
+	//EnvVars.ServerAddress = os.Getenv("SERVER_ADDRESS")
+	//EnvVars.AuthSecret = os.Getenv("AUTH_SECRET")
+
+	viper.SetConfigFile(".env")
+	viper.ReadInConfig()
+	viper.AutomaticEnv()
+
+	EnvVars.DBDriver = viper.GetString("DB_DRIVER")
+	EnvVars.DBSource = viper.GetString("DB_SOURCE")
+	EnvVars.ServerAddress = viper.GetString("SERVER_ADDRESS")
+	EnvVars.AuthSecret = viper.GetString("AUTH_SECRET")
 }
