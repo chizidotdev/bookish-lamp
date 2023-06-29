@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	err := godotenv.Load()
+	err := godotenv.Load("ENV")
 	if err != nil {
 		log.Fatal("Cannot load config:", err)
 	}
