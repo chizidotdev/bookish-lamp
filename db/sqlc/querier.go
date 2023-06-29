@@ -28,6 +28,8 @@ type Querier interface {
 	ListSales(ctx context.Context, arg ListSalesParams) ([]Sale, error)
 	ListSalesByUserId(ctx context.Context, userID uuid.UUID) ([]Sale, error)
 	ListUsers(ctx context.Context) ([]User, error)
+	PriceSoldByDate(ctx context.Context, userID uuid.UUID) ([]PriceSoldByDateRow, error)
+	PriceSoldByWeek(ctx context.Context) ([]PriceSoldByWeekRow, error)
 	UpdateItem(ctx context.Context, arg UpdateItemParams) (Item, error)
 	UpdateItemQuantity(ctx context.Context, arg UpdateItemQuantityParams) (Item, error)
 	UpdateSale(ctx context.Context, arg UpdateSaleParams) (Sale, error)

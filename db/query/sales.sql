@@ -96,3 +96,27 @@ WHERE
     sale_date >= DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '1 week'
     AND sale_date < DATE_TRUNC('week', CURRENT_DATE)
     AND user_id = $1;
+
+-- name: PriceSoldByDate :many
+SELECT
+    DATE_TRUNC('day', sale_date) AS date,
+    SUM(sale_price) AS total_sale_price
+FROM
+    sales
+WHERE
+    user_id = $1
+GROUP BY
+    DATE_TRUNC('day', sale_date)
+ORDER BY
+    DATE_TRUNC('day', sale_date);
+
+-- name: PriceSoldByWeek :many
+SELECT
+    DATE_TRUNC('week', sale_date) AS date,
+    SUM(sale_price) AS total_sale_price
+FROM
+    sales
+GROUP BY
+    DATE_TRUNC('week', sale_date)
+ORDER BY
+    DATE_TRUNC('week', sale_date);

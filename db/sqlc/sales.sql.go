@@ -276,6 +276,88 @@ func (q *Queries) ListSalesByUserId(ctx context.Context, userID uuid.UUID) ([]Sa
 	return items, nil
 }
 
+const priceSoldByDate = `-- name: PriceSoldByDate :many
+SELECT
+    DATE_TRUNC('day', sale_date) AS date,
+    SUM(sale_price) AS total_sale_price
+FROM
+    sales
+WHERE
+    user_id = $1
+GROUP BY
+    DATE_TRUNC('day', sale_date)
+ORDER BY
+    DATE_TRUNC('day', sale_date)
+`
+
+type PriceSoldByDateRow struct {
+	Date           time.Time `json:"date"`
+	TotalSalePrice int64 `json:"total_sale_price"`
+}
+
+func (q *Queries) PriceSoldByDate(ctx context.Context, userID uuid.UUID) ([]PriceSoldByDateRow, error) {
+	rows, err := q.db.QueryContext(ctx, priceSoldByDate, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []PriceSoldByDateRow{}
+	for rows.Next() {
+		var i PriceSoldByDateRow
+		if err := rows.Scan(&i.Date, &i.TotalSalePrice); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const priceSoldByWeek = `-- name: PriceSoldByWeek :many
+SELECT
+    DATE_TRUNC('week', sale_date) AS date,
+    SUM(sale_price) AS total_sale_price
+FROM
+    sales
+GROUP BY
+    DATE_TRUNC('week', sale_date)
+ORDER BY
+    DATE_TRUNC('week', sale_date)
+`
+
+type PriceSoldByWeekRow struct {
+	Date           time.Time `json:"date"`
+	TotalSalePrice int64 `json:"total_sale_price"`
+}
+
+func (q *Queries) PriceSoldByWeek(ctx context.Context) ([]PriceSoldByWeekRow, error) {
+	rows, err := q.db.QueryContext(ctx, priceSoldByWeek)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []PriceSoldByWeekRow{}
+	for rows.Next() {
+		var i PriceSoldByWeekRow
+		if err := rows.Scan(&i.Date, &i.TotalSalePrice); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateSale = `-- name: UpdateSale :one
 UPDATE sales
 SET
