@@ -9,7 +9,7 @@ import (
 type Config struct {
 	DBDriver   string `mapstructure:"DB_DRIVER"`
 	DBSource   string `mapstructure:"DB_SOURCE"`
-	PORT       string `mapstructure:"SERVER_ADDRESS"`
+	PORT       string `mapstructure:"PORT"`
 	AuthSecret string `mapstructure:"AUTH_SECRET"`
 
 	Auth0Domain      string `mapstructure:"AUTH0_DOMAIN"`
@@ -28,6 +28,6 @@ func LoadConfig() {
 
 	EnvVars.DBDriver = viper.GetString("DB_DRIVER")
 	EnvVars.DBSource = viper.GetString("DB_SOURCE")
-	EnvVars.PORT = viper.GetString("SERVER_ADDRESS")
+	EnvVars.PORT = viper.GetString("PORT")
 	EnvVars.AuthSecret = viper.GetString("AUTH_SECRET")
 }
