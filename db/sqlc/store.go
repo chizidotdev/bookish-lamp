@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	_ "github.com/golang/mock/mockgen/model"
-	// _ "github.com/lib/pq"
+	_ "github.com/lib/pq"
 )
 
 // Store provides all functions to execute db queries and transactions

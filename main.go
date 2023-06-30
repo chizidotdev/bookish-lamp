@@ -2,19 +2,18 @@ package main
 
 import (
 	"database/sql"
-	"log"
-
 	"github.com/chizidotdev/copia/api"
 	db "github.com/chizidotdev/copia/db/sqlc"
 	"github.com/chizidotdev/copia/utils"
+	"github.com/joho/godotenv"
+	"log"
 )
 
 func init() {
-
-	//err := godotenv.Load(".env")
-	//if err != nil {
-	//	log.Fatal("Cannot load config:", err)
-	//}
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Cannot load config:", err)
+	}
 	utils.LoadConfig()
 }
 
@@ -27,7 +26,13 @@ func main() {
 	store := db.NewStore(conn)
 	server := api.NewServer(store)
 
-	err = server.Start(utils.EnvVars.ServerAddress)
+	port := utils.EnvVars.PORT
+	if port == "" {
+		port = "3333"
+	}
+	serverAddr := "0.0.0.0:" + port
+
+	err = server.Start(serverAddr)
 	if err != nil {
 		log.Fatal("Cannot start server:", err)
 	}

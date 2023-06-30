@@ -1,16 +1,14 @@
 package utils
 
-import (
-	"github.com/spf13/viper"
-)
+import "os"
 
 // Config stores all the configuration for the application
 // using values read by viper from the config file or env variables
 type Config struct {
-	DBDriver      string `mapstructure:"DB_DRIVER"`
-	DBSource      string `mapstructure:"DB_SOURCE"`
-	ServerAddress string `mapstructure:"SERVER_ADDRESS"`
-	AuthSecret    string `mapstructure:"AUTH_SECRET"`
+	DBDriver   string `mapstructure:"DB_DRIVER"`
+	DBSource   string `mapstructure:"DB_SOURCE"`
+	PORT       string `mapstructure:"PORT"`
+	AuthSecret string `mapstructure:"AUTH_SECRET"`
 
 	Auth0Domain      string `mapstructure:"AUTH0_DOMAIN"`
 	Auth0Audience    string `mapstructure:"AUTH0_AUDIENCE"`
@@ -22,17 +20,8 @@ var EnvVars Config
 
 // LoadConfig loads the configuration from the config file or env variable
 func LoadConfig() {
-	//EnvVars.DBDriver = os.Getenv("DB_DRIVER")
-	//EnvVars.DBSource = os.Getenv("DB_SOURCE")
-	//EnvVars.ServerAddress = os.Getenv("SERVER_ADDRESS")
-	//EnvVars.AuthSecret = os.Getenv("AUTH_SECRET")
-
-	viper.SetConfigFile("ENV")
-	viper.ReadInConfig()
-	viper.AutomaticEnv()
-
-	EnvVars.DBDriver = viper.GetString("DB_DRIVER")
-	EnvVars.DBSource = viper.GetString("DB_SOURCE")
-	EnvVars.ServerAddress = viper.GetString("SERVER_ADDRESS")
-	EnvVars.AuthSecret = viper.GetString("AUTH_SECRET")
+	EnvVars.DBDriver = os.Getenv("DB_DRIVER")
+	EnvVars.DBSource = os.Getenv("DB_SOURCE")
+	EnvVars.PORT = os.Getenv("PORT")
+	EnvVars.AuthSecret = os.Getenv("AUTH_SECRET")
 }
