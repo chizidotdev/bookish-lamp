@@ -27,7 +27,7 @@ func LoadConfig() {
 	//EnvVars.ServerAddress = os.Getenv("SERVER_ADDRESS")
 	//EnvVars.AuthSecret = os.Getenv("AUTH_SECRET")
 
-	viper.SetConfigFile(".env")
+	viper.SetConfigFile("ENV")
 	viper.ReadInConfig()
 	viper.AutomaticEnv()
 

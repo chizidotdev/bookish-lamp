@@ -7,7 +7,6 @@ import (
 	"github.com/chizidotdev/copia/api"
 	db "github.com/chizidotdev/copia/db/sqlc"
 	"github.com/chizidotdev/copia/utils"
-	_ "github.com/lib/pq"
 )
 
 func init() {
