@@ -7,14 +7,14 @@ import (
 	"github.com/chizidotdev/copia/api"
 	db "github.com/chizidotdev/copia/db/sqlc"
 	"github.com/chizidotdev/copia/utils"
-	"github.com/joho/godotenv"
 )
 
 func init() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Cannot load config:", err)
-	}
+
+	//err := godotenv.Load(".env")
+	//if err != nil {
+	//	log.Fatal("Cannot load config:", err)
+	//}
 	utils.LoadConfig()
 }
 
