@@ -2,27 +2,27 @@ package main
 
 import (
 	"database/sql"
-	"github.com/chizidotdev/copia/api"
-	db "github.com/chizidotdev/copia/db/sqlc"
-	"github.com/chizidotdev/copia/utils"
+	"github.com/chizidotdev/copia/internal/app"
+	"github.com/chizidotdev/copia/internal/repository"
+	"github.com/chizidotdev/copia/pkg/utils"
+	_ "github.com/lib/pq"
 	"log"
 )
 
 func main() {
 	utils.LoadConfig()
-	log.Println(utils.EnvVars)
 
 	conn, err := sql.Open(utils.EnvVars.DBDriver, utils.EnvVars.DBSource)
 	if err != nil {
 		log.Fatal("Cannot connect to db:", err)
 	}
 
-	store := db.NewStore(conn)
-	server := api.NewServer(store)
+	store := repository.NewStore(conn)
+	server := app.NewServer(store)
 
 	port := utils.EnvVars.PORT
 	if port == "" {
-		port = "3333"
+		port = "8080"
 	}
 	serverAddr := "0.0.0.0:" + port
 
