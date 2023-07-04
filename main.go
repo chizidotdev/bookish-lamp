@@ -2,32 +2,31 @@ package main
 
 import (
 	"database/sql"
+	"github.com/chizidotdev/copia/internal/app"
+	"github.com/chizidotdev/copia/internal/repository"
+	"github.com/chizidotdev/copia/pkg/utils"
+	_ "github.com/lib/pq"
 	"log"
-
-	"github.com/chizidotdev/copia/api"
-	db "github.com/chizidotdev/copia/db/sqlc"
-	"github.com/chizidotdev/copia/utils"
 )
 
-func init() {
-
-	//err := godotenv.Load(".env")
-	//if err != nil {
-	//	log.Fatal("Cannot load config:", err)
-	//}
-	utils.LoadConfig()
-}
-
 func main() {
+	utils.LoadConfig()
+
 	conn, err := sql.Open(utils.EnvVars.DBDriver, utils.EnvVars.DBSource)
 	if err != nil {
 		log.Fatal("Cannot connect to db:", err)
 	}
 
-	store := db.NewStore(conn)
-	server := api.NewServer(store)
+	store := repository.NewStore(conn)
+	server := app.NewServer(store)
 
-	err = server.Start(utils.EnvVars.ServerAddress)
+	port := utils.EnvVars.PORT
+	if port == "" {
+		port = "8080"
+	}
+	serverAddr := "0.0.0.0:" + port
+
+	err = server.Start(serverAddr)
 	if err != nil {
 		log.Fatal("Cannot start server:", err)
 	}
