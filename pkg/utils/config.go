@@ -8,10 +8,11 @@ import (
 // Config stores all the configuration for the application
 // using values read from the config file or env variables
 type Config struct {
-	DBDriver   string `mapstructure:"DB_DRIVER"`
-	DBSource   string `mapstructure:"DB_SOURCE"`
-	PORT       string `mapstructure:"PORT"`
-	AuthSecret string `mapstructure:"AUTH_SECRET"`
+	DBDriver     string `mapstructure:"DB_DRIVER"`
+	DBSource     string `mapstructure:"DB_SOURCE"`
+	PORT         string `mapstructure:"PORT"`
+	AuthSecret   string `mapstructure:"AUTH_SECRET"`
+	ClientDomain string `mapstructure:"CLIENT_DOMAIN"`
 }
 
 var EnvVars Config
@@ -29,4 +30,5 @@ func LoadConfig() {
 	EnvVars.DBSource = viper.GetString("DB_SOURCE")
 	EnvVars.PORT = viper.GetString("PORT")
 	EnvVars.AuthSecret = viper.GetString("AUTH_SECRET")
+	EnvVars.ClientDomain = viper.GetString("CLIENT_DOMAIN")
 }

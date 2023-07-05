@@ -42,7 +42,7 @@ func (u *userService) Login(ctx *gin.Context) {
 
 	ctx.Header("Access-Control-Allow-Credentials", "true")
 	ctx.SetSameSite(http.SameSiteNoneMode)
-	ctx.SetCookie("Authorization", tokenString, 3600*24, "/", "localhost", false, true)
+	ctx.SetCookie("Authorization", tokenString, 3600*24, "/", utils.EnvVars.ClientDomain, false, true)
 
 	ctx.JSON(http.StatusOK, gin.H{"token": tokenString})
 }
