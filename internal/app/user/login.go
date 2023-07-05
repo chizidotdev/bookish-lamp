@@ -19,7 +19,7 @@ func (u *userService) Login(ctx *gin.Context) {
 
 	user, err := u.Store.GetUser(ctx, req.Email)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
+		ctx.JSON(http.StatusNotFound, utils.ErrorResponse(err.Error()))
 		return
 	}
 
