@@ -18,10 +18,10 @@ var EnvVars Config
 
 // LoadConfig loads the configuration from the config file or env variable
 func LoadConfig() {
-	viper.SetConfigFile(".env")
+	viper.SetConfigFile("ENV")
 	err := viper.ReadInConfig()
 	if err != nil {
-		log.Fatal("Cannot read config file:", err)
+		log.Println("Cannot read config file:", err)
 	}
 	viper.AutomaticEnv()
 
