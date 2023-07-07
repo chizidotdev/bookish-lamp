@@ -2,7 +2,7 @@ package sale
 
 import (
 	"fmt"
-	"github.com/chizidotdev/copia/internal/dto"
+	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/chizidotdev/copia/internal/repository"
 	"github.com/chizidotdev/copia/pkg/utils"
 	"github.com/gin-gonic/gin"
@@ -11,7 +11,7 @@ import (
 )
 
 func (s *saleService) GetSaleByID(ctx *gin.Context) {
-	user := ctx.MustGet("user").(dto.UserJWT)
+	user := ctx.MustGet("user").(datastruct.UserJWT)
 	saleID := uuid.MustParse(ctx.Param("saleID"))
 
 	sale, err := s.Store.GetSale(ctx, repository.GetSaleParams{

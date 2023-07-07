@@ -1,7 +1,7 @@
 package sale
 
 import (
-	"github.com/chizidotdev/copia/internal/dto"
+	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/chizidotdev/copia/internal/repository"
 	"github.com/chizidotdev/copia/pkg/utils"
 	"github.com/gin-gonic/gin"
@@ -10,7 +10,7 @@ import (
 )
 
 func (s *saleService) ListSalesByUserID(ctx *gin.Context) {
-	user := ctx.MustGet("user").(dto.UserJWT)
+	user := ctx.MustGet("user").(datastruct.UserJWT)
 
 	sales, err := s.Store.ListSalesByUserId(ctx, user.ID)
 	if err != nil {
@@ -22,7 +22,7 @@ func (s *saleService) ListSalesByUserID(ctx *gin.Context) {
 }
 
 func (s *saleService) ListSales(ctx *gin.Context) {
-	user := ctx.MustGet("user").(dto.UserJWT)
+	user := ctx.MustGet("user").(datastruct.UserJWT)
 
 	itemID, err := uuid.Parse(ctx.Query("itemID"))
 	if err != nil {

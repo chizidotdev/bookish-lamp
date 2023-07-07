@@ -2,14 +2,14 @@ package dashboard
 
 import (
 	"fmt"
-	"github.com/chizidotdev/copia/internal/dto"
+	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/chizidotdev/copia/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func (d *dashboardService) GetDashboard(ctx *gin.Context) {
-	user := ctx.MustGet("user").(dto.UserJWT)
+	user := ctx.MustGet("user").(datastruct.UserJWT)
 	inventory, err := d.Store.GetInventoryStats(ctx, user.ID)
 	if err != nil {
 		errMsg := fmt.Errorf("failed to get inventory stats: %w", err)
@@ -35,7 +35,7 @@ func (d *dashboardService) GetDashboard(ctx *gin.Context) {
 		return
 	}
 
-	dashboard := dto.DashboardResponse{
+	dashboard := datastruct.DashboardResponse{
 		TotalItems:       inventory.TotalItems,
 		LowStockItems:    inventory.LowStockItems,
 		RecentSales:      inventory.RecentSales,

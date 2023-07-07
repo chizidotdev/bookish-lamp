@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/chizidotdev/copia/internal/dto"
+	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/chizidotdev/copia/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -37,7 +37,7 @@ func (u *userService) IsAuthenticated(ctx *gin.Context) {
 			return
 		}
 
-		ctx.Set("user", dto.UserJWT{
+		ctx.Set("user", datastruct.UserJWT{
 			Email: user.Email,
 			ID:    user.ID,
 		})

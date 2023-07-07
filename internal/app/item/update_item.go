@@ -1,6 +1,7 @@
 package item
 
 import (
+	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/chizidotdev/copia/internal/dto"
 	"github.com/chizidotdev/copia/internal/repository"
 	"github.com/chizidotdev/copia/pkg/utils"
@@ -23,7 +24,7 @@ func (i *itemService) UpdateItem(ctx *gin.Context) {
 		return
 	}
 
-	user := ctx.MustGet("user").(dto.UserJWT)
+	user := ctx.MustGet("user").(datastruct.UserJWT)
 
 	arg := repository.UpdateItemParams{
 		ID:           itemID,

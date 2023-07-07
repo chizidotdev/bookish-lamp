@@ -1,4 +1,4 @@
-package dto
+package datastruct
 
 import "github.com/chizidotdev/copia/internal/repository"
 

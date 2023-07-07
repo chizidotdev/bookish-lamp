@@ -2,14 +2,14 @@ package dashboard
 
 import (
 	"fmt"
-	"github.com/chizidotdev/copia/internal/dto"
+	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/chizidotdev/copia/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"math"
 )
 
 func (d *dashboardService) getSalesPerformance(ctx *gin.Context) (float64, error) {
-	user := ctx.MustGet("user").(dto.UserJWT)
+	user := ctx.MustGet("user").(datastruct.UserJWT)
 	currWeekSale, err := d.Store.CurrentWeekSales(ctx, user.ID)
 	if err != nil {
 		errMsg := fmt.Errorf("failed to get current week sales: %w", err)
