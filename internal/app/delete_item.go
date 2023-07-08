@@ -1,7 +1,7 @@
-package item
+package app
 
 import (
-	"github.com/chizidotdev/copia/internal/dto"
+	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/chizidotdev/copia/internal/repository"
 	"github.com/chizidotdev/copia/pkg/utils"
 	"github.com/gin-gonic/gin"
@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func (i *itemService) DeleteItem(ctx *gin.Context) {
+func (server *Server) deleteItem(ctx *gin.Context) {
 	idParam := ctx.Params.ByName("id")
 	itemID, err := uuid.Parse(idParam)
 	if err != nil {
@@ -17,14 +17,14 @@ func (i *itemService) DeleteItem(ctx *gin.Context) {
 		return
 	}
 
-	user := ctx.MustGet("user").(dto.UserJWT)
+	user := ctx.MustGet("user").(datastruct.UserJWT)
 
 	arg := repository.DeleteItemParams{
 		ID:     itemID,
 		UserID: user.ID,
 	}
 
-	err = i.Store.DeleteItem(ctx, arg)
+	err = server.ItemService.DeleteItem(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
 		return

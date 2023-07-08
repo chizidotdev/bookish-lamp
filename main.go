@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"github.com/chizidotdev/copia/internal/app"
 	"github.com/chizidotdev/copia/internal/repository"
+	"github.com/chizidotdev/copia/internal/service"
 	"github.com/chizidotdev/copia/pkg/utils"
 	_ "github.com/lib/pq"
 	"log"
@@ -18,7 +19,8 @@ func main() {
 	}
 
 	store := repository.NewStore(conn)
-	server := app.NewServer(store)
+	newService := service.NewService(store)
+	server := app.NewServer(newService)
 
 	port := utils.EnvVars.PORT
 	if port == "" {

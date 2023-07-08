@@ -1,10 +1,6 @@
 package app
 
 import (
-	"github.com/chizidotdev/copia/internal/app/dashboard"
-	"github.com/chizidotdev/copia/internal/app/item"
-	"github.com/chizidotdev/copia/internal/app/sale"
-	"github.com/chizidotdev/copia/internal/app/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,38 +14,34 @@ func createRoutes(server *Server) {
 	})
 
 	// User routes
-	userService := user.NewUserService(server.Store)
-	server.router.POST("/signup", userService.CreateUser)
-	server.router.POST("/login", userService.Login)
-	server.router.GET("/logout", userService.Logout)
-	server.router.GET("/users", userService.IsAuthenticated, userService.ListUsers)
-	server.router.GET("/validateToken", userService.IsAuthenticated, userService.ValidateToken)
+	server.router.POST("/signup", server.createUser)
+	server.router.POST("/login", server.login)
+	server.router.GET("/logout", server.logout)
+	server.router.GET("/validateToken", server.isAuth, server.validateToken)
+	//server.router.GET("/users", server.isAdmin, server.ListUsers)
 
-	// Item routes
-	itemService := item.NewItemService(server.Store)
+	// ItemService routes
 	itemRoutes := server.router.Group("/items")
-	itemRoutes.Use(userService.IsAuthenticated)
+	itemRoutes.Use(server.isAuth)
 	{
-		itemRoutes.POST("", itemService.CreateItem)
-		itemRoutes.GET("", itemService.ListItems)
-		itemRoutes.GET("/:id", itemService.GetItemByID)
-		itemRoutes.PUT("/:id", itemService.UpdateItem)
-		itemRoutes.DELETE("/:id", itemService.DeleteItem)
+		itemRoutes.POST("", server.createItem)
+		itemRoutes.GET("", server.listItems)
+		itemRoutes.GET("/:id", server.getItemByID)
+		itemRoutes.PUT("/:id", server.updateItem)
+		itemRoutes.DELETE("/:id", server.deleteItem)
 	}
 
-	// Sale routes
-	saleService := sale.NewSaleService(server.Store)
+	// SaleService routes
 	saleRoutes := server.router.Group("/sales")
-	saleRoutes.Use(userService.IsAuthenticated)
+	saleRoutes.Use(server.isAuth)
 	{
-		saleRoutes.POST("", saleService.CreateSale)
-		saleRoutes.GET("", saleService.ListSales)
-		saleRoutes.GET("/:saleID", saleService.GetSaleByID)
-		saleRoutes.PUT("/:saleID", saleService.UpdateSale)
-		saleRoutes.DELETE("/:saleID", saleService.DeleteSale)
+		saleRoutes.POST("", server.createSale)
+		saleRoutes.GET("", server.listSales)
+		saleRoutes.GET("/:saleID", server.getSaleByID)
+		saleRoutes.PUT("/:saleID", server.updateSale)
+		saleRoutes.DELETE("/:saleID", server.deleteSale)
 	}
 
-	// Dashboard routes
-	dashboardService := dashboard.NewDashboardService(server.Store)
-	server.router.GET("/inventory", userService.IsAuthenticated, dashboardService.GetDashboard)
+	// DashboardService routes
+	server.router.GET("/inventory", server.isAuth, server.getDashboard)
 }

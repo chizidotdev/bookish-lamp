@@ -1,14 +1,13 @@
-package item
+package app
 
 import (
-	"database/sql"
 	"github.com/chizidotdev/copia/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
 )
 
-func (i *itemService) GetItemByID(ctx *gin.Context) {
+func (server *Server) getItemByID(ctx *gin.Context) {
 	idParam := ctx.Params.ByName("id")
 	itemID, err := uuid.Parse(idParam)
 	if err != nil {
@@ -16,14 +15,9 @@ func (i *itemService) GetItemByID(ctx *gin.Context) {
 		return
 	}
 
-	item, err := i.Store.GetItem(ctx, itemID)
+	item, err := server.ItemService.GetItemByID(ctx, itemID)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, utils.ErrorResponse(err.Error()))
-			return
-		}
-
-		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
+		ctx.JSON(http.StatusNotFound, utils.ErrorResponse(err.Error()))
 		return
 	}
 
