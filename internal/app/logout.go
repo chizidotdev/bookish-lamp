@@ -1,4 +1,4 @@
-package user
+package app
 
 import (
 	"github.com/chizidotdev/copia/pkg/utils"
@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (u *userService) Logout(ctx *gin.Context) {
+func (server *Server) logout(ctx *gin.Context) {
 	ctx.SetSameSite(http.SameSiteNoneMode)
 	ctx.SetCookie("Authorization", "", -1, "", utils.EnvVars.ClientDomain, true, true)
 	ctx.JSON(http.StatusOK, "Logged out successfully")

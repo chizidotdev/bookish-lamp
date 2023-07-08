@@ -1,4 +1,4 @@
-package item
+package app
 
 import (
 	"github.com/chizidotdev/copia/internal/datastruct"
@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func (i *itemService) UpdateItem(ctx *gin.Context) {
+func (server *Server) updateItem(ctx *gin.Context) {
 	var req dto.UpdateItemRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
@@ -35,9 +35,10 @@ func (i *itemService) UpdateItem(ctx *gin.Context) {
 		UserID:       user.ID,
 	}
 
-	item, err := i.Store.UpdateItem(ctx, arg)
+	item, err := server.ItemService.UpdateItem(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
+		return
 	}
 
 	ctx.JSON(http.StatusOK, item)

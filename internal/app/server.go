@@ -1,24 +1,24 @@
 package app
 
 import (
-	"github.com/chizidotdev/copia/internal/repository"
+	"github.com/chizidotdev/copia/internal/service"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 // Server represents the HTTP server
 type Server struct {
-	Store  *repository.Store
 	router *gin.Engine
+	*service.Service
 }
 
 // NewServer creates a new HTTP server and setup routing
-func NewServer(store *repository.Store) *Server {
+func NewServer(service *service.Service) *Server {
 	router := gin.Default()
 
 	server := &Server{
-		Store:  store,
-		router: router,
+		router:  router,
+		Service: service,
 	}
 
 	corsConfig(server)

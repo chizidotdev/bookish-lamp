@@ -1,7 +1,6 @@
-package sale
+package app
 
 import (
-	"fmt"
 	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/chizidotdev/copia/internal/repository"
 	"github.com/chizidotdev/copia/pkg/utils"
@@ -10,17 +9,16 @@ import (
 	"net/http"
 )
 
-func (s *saleService) GetSaleByID(ctx *gin.Context) {
+func (server *Server) getSaleByID(ctx *gin.Context) {
 	user := ctx.MustGet("user").(datastruct.UserJWT)
 	saleID := uuid.MustParse(ctx.Param("saleID"))
 
-	sale, err := s.Store.GetSale(ctx, repository.GetSaleParams{
+	sale, err := server.SaleService.GetSaleByID(ctx, repository.GetSaleParams{
 		ID:     saleID,
 		UserID: user.ID,
 	})
 	if err != nil {
-		errMessage := fmt.Errorf("sale not found: %v", err)
-		ctx.JSON(http.StatusNotFound, utils.ErrorResponse(errMessage.Error()))
+		ctx.JSON(http.StatusNotFound, utils.ErrorResponse(err.Error()))
 		return
 	}
 

@@ -1,4 +1,4 @@
-package item
+package app
 
 import (
 	"github.com/chizidotdev/copia/internal/datastruct"
@@ -9,26 +9,19 @@ import (
 	"net/http"
 )
 
-func (i *itemService) DeleteItem(ctx *gin.Context) {
-	idParam := ctx.Params.ByName("id")
-	itemID, err := uuid.Parse(idParam)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
-		return
-	}
-
+func (server *Server) deleteSale(ctx *gin.Context) {
 	user := ctx.MustGet("user").(datastruct.UserJWT)
+	saleID := uuid.MustParse(ctx.Param("saleID"))
 
-	arg := repository.DeleteItemParams{
-		ID:     itemID,
+	err := server.SaleService.DeleteSale(ctx, repository.DeleteSaleParams{
+		ID:     saleID,
 		UserID: user.ID,
-	}
+	})
 
-	err = i.Store.DeleteItem(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, "Item deleted")
+	ctx.JSON(http.StatusOK, "Sale deleted successfully")
 }
