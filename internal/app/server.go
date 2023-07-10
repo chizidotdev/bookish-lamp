@@ -40,7 +40,7 @@ func (server *Server) Start(address string) error {
 func corsConfig(server *Server) {
 	server.router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000", "https://copia.aidmedium.com"},
-		AllowMethods:     []string{"PUT", "POST", "GET", "DELETE"},
+		AllowMethods:     []string{"PUT", "POST", "GET", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,

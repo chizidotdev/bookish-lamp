@@ -20,7 +20,6 @@ func (server *Server) login(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Header("Access-Control-Allow-Credentials", "true")
 	ctx.SetSameSite(http.SameSiteNoneMode)
 	ctx.SetCookie("Authorization", tokenString, 3600*24, "/", utils.EnvVars.ClientDomain, true, true)
 
