@@ -1,14 +1,22 @@
 package service
 
 import (
+	"context"
+	"errors"
+	"github.com/auth0/go-jwt-middleware/v2/jwks"
+	"github.com/auth0/go-jwt-middleware/v2/validator"
+	"github.com/chizidotdev/copia/pkg/utils"
 	"github.com/golang-jwt/jwt/v5"
+	"log"
+	"net/url"
+	"strings"
 	"time"
 )
 
 type TokenManager interface {
 	NewJWT(subject string) (string, error)
 	Parse(accessToken string) (string, error)
-	NewRefreshToken() (string, error)
+	ValidateToken(ctx context.Context, accessToken string) (interface{}, error)
 }
 
 type tokenMangerService struct {
@@ -50,6 +58,33 @@ func (t *tokenMangerService) Parse(accessToken string) (string, error) {
 	return claims["sub"].(string), nil
 }
 
-func (t *tokenMangerService) NewRefreshToken() (string, error) {
-	return "", nil
+// ValidateToken is a middleware that will check the validity of our JWT.
+func (t *tokenMangerService) ValidateToken(ctx context.Context, accessToken string) (interface{}, error) {
+	issuerURL, err := url.Parse("https://" + utils.EnvVars.Auth0Domain + "/")
+	if err != nil {
+		log.Fatalf("Failed to parse the issuer url: %v", err)
+	}
+
+	provider := jwks.NewCachingProvider(issuerURL, 5*time.Minute)
+
+	jwtValidator, err := validator.New(
+		provider.KeyFunc,
+		validator.RS256,
+		issuerURL.String(),
+		[]string{utils.EnvVars.Auth0Audience},
+		validator.WithAllowedClockSkew(time.Minute),
+	)
+	if err != nil {
+		log.Fatal("failed to set up the jwt validator")
+	}
+
+	splitToken := strings.Split(accessToken, "Bearer ")
+	accessToken = splitToken[1]
+
+	tokenInfo, err := jwtValidator.ValidateToken(ctx, accessToken)
+	if err != nil {
+		return nil, errors.New("invalid token")
+	}
+
+	return tokenInfo, nil
 }

@@ -2,13 +2,12 @@ package service
 
 import (
 	"context"
-	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/chizidotdev/copia/internal/repository"
 	"github.com/google/uuid"
 )
 
 type ItemService interface {
-	ListItems(ctx context.Context, user datastruct.UserJWT) ([]repository.Item, error)
+	ListItems(ctx context.Context, userID uuid.UUID) ([]repository.Item, error)
 	CreateItem(ctx context.Context, req repository.CreateItemParams) (repository.Item, error)
 	UpdateItem(ctx context.Context, req repository.UpdateItemParams) (repository.Item, error)
 	GetItemByID(ctx context.Context, itemID uuid.UUID) (repository.Item, error)
@@ -34,8 +33,8 @@ func (i *itemService) CreateItem(ctx context.Context, req repository.CreateItemP
 	return newItem, nil
 }
 
-func (i *itemService) ListItems(ctx context.Context, user datastruct.UserJWT) ([]repository.Item, error) {
-	items, err := i.Store.ListItems(ctx, user.ID)
+func (i *itemService) ListItems(ctx context.Context, userID uuid.UUID) ([]repository.Item, error) {
+	items, err := i.Store.ListItems(ctx, userID)
 	if err != nil {
 		return nil, err
 	}

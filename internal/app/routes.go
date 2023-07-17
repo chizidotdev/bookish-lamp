@@ -13,12 +13,12 @@ func createRoutes(server *Server) {
 		})
 	})
 
-	// User routes
+	// User/Auth routes
 	server.router.POST("/signup", server.createUser)
 	server.router.POST("/login", server.login)
 	server.router.GET("/logout", server.logout)
-	server.router.GET("/validateToken", server.isAuth, server.validateToken)
-	//server.router.GET("/users", server.isAdmin, server.ListUsers)
+	//server.router.GET("/validateToken", server.validateToken)
+	server.router.GET("/user", server.getUser)
 
 	// ItemService routes
 	itemRoutes := server.router.Group("/items")

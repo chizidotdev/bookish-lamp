@@ -14,7 +14,7 @@ func (server *Server) listSales(ctx *gin.Context) {
 
 	itemID, err := uuid.Parse(ctx.Query("itemID"))
 	if err != nil {
-		sales, err := server.SaleService.ListSalesByUser(ctx, user)
+		sales, err := server.SaleService.ListSalesByUser(ctx, user.ID)
 		if err != nil {
 			ctx.JSON(http.StatusNotFound, utils.ErrorResponse(err.Error()))
 			return

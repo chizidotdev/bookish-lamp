@@ -3,12 +3,12 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/chizidotdev/copia/internal/repository"
+	"github.com/google/uuid"
 )
 
 type SaleService interface {
-	ListSalesByUser(ctx context.Context, user datastruct.UserJWT) ([]repository.ListSalesByUserIdRow, error)
+	ListSalesByUser(ctx context.Context, userID uuid.UUID) ([]repository.ListSalesByUserIdRow, error)
 	ListSalesByItem(ctx context.Context, req repository.ListSalesParams) ([]repository.ListSalesRow, error)
 	CreateSale(ctx context.Context, req repository.CreateSaleParams) (repository.Sale, error)
 	UpdateSale(ctx context.Context, req repository.UpdateSaleParams) (repository.Sale, error)
@@ -26,8 +26,8 @@ func NewSaleService(store *repository.Store) SaleService {
 	}
 }
 
-func (s *saleService) ListSalesByUser(ctx context.Context, user datastruct.UserJWT) ([]repository.ListSalesByUserIdRow, error) {
-	sales, err := s.Store.ListSalesByUserId(ctx, user.ID)
+func (s *saleService) ListSalesByUser(ctx context.Context, userID uuid.UUID) ([]repository.ListSalesByUserIdRow, error) {
+	sales, err := s.Store.ListSalesByUserId(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (s *saleService) CreateSale(ctx context.Context, req repository.CreateSaleP
 }
 
 func (s *saleService) UpdateSale(ctx context.Context, req repository.UpdateSaleParams) (repository.Sale, error) {
-	initialSale, err := s.Store.GetSale(ctx, repository.GetSaleParams{
+	initialSale, err := s.GetSaleByID(ctx, repository.GetSaleParams{
 		ID:     req.ID,
 		UserID: req.UserID,
 	})
@@ -128,7 +128,7 @@ func (s *saleService) GetSaleByID(ctx context.Context, req repository.GetSalePar
 }
 
 func (s *saleService) DeleteSale(ctx context.Context, req repository.DeleteSaleParams) error {
-	sale, err := s.Store.GetSale(ctx, repository.GetSaleParams{
+	sale, err := s.GetSaleByID(ctx, repository.GetSaleParams{
 		ID:     req.ID,
 		UserID: req.UserID,
 	})

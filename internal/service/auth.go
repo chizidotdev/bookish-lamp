@@ -13,13 +13,6 @@ import (
 type AuthService interface {
 	CreateUser(ctx context.Context, req repository.CreateUserParams) error
 	Login(ctx context.Context, request dto.LoginRequest) (string, error)
-	GetUser(ctx context.Context, email string) (repository.User, error)
-	ListUsers(ctx context.Context) ([]repository.User, error)
-	//ValidateToken(ctx *gin.Context)
-	//IsAuthenticated(ctx *gin.Context)
-	//Logout(ctx context.Context) error
-	//UpdateUser(ctx *gin.Context)
-	//DeleteUser(ctx *gin.Context)
 }
 
 type authService struct {
@@ -66,22 +59,4 @@ func (a *authService) Login(ctx context.Context, req dto.LoginRequest) (string, 
 	}
 
 	return token, nil
-}
-
-func (a *authService) GetUser(ctx context.Context, email string) (repository.User, error) {
-	user, err := a.Store.GetUser(ctx, email)
-	if err != nil {
-		return repository.User{}, fmt.Errorf("error getting user: %w", err)
-	}
-
-	return user, nil
-}
-
-func (a *authService) ListUsers(ctx context.Context) ([]repository.User, error) {
-	users, err := a.Store.ListUsers(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("error listing users: %w", err)
-	}
-
-	return users, nil
 }

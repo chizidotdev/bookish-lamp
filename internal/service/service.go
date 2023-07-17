@@ -11,6 +11,7 @@ type Service struct {
 	SaleService
 	AuthService
 	TokenManager
+	UserService
 }
 
 func NewService(store *repository.Store) *Service {
@@ -19,6 +20,7 @@ func NewService(store *repository.Store) *Service {
 	sale := NewSaleService(store)
 	tokenManger := NewTokenManager(utils.EnvVars.AuthSecret)
 	auth := NewAuthService(store, tokenManger)
+	user := NewUserService(store, tokenManger)
 
 	return &Service{
 		DashboardService: dashboard,
@@ -26,5 +28,6 @@ func NewService(store *repository.Store) *Service {
 		SaleService:      sale,
 		AuthService:      auth,
 		TokenManager:     tokenManger,
+		UserService:      user,
 	}
 }

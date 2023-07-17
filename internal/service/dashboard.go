@@ -6,11 +6,12 @@ import (
 	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/chizidotdev/copia/internal/repository"
 	"github.com/chizidotdev/copia/pkg/utils"
+	"github.com/google/uuid"
 	"math"
 )
 
 type DashboardService interface {
-	GetDashboard(ctx context.Context, user datastruct.UserJWT) (datastruct.DashboardResponse, error)
+	GetDashboard(ctx context.Context, userID uuid.UUID) (datastruct.DashboardResponse, error)
 }
 
 type dashboardService struct {
@@ -23,24 +24,24 @@ func NewDashboardService(store *repository.Store) DashboardService {
 	}
 }
 
-func (d *dashboardService) GetDashboard(ctx context.Context, user datastruct.UserJWT) (datastruct.DashboardResponse, error) {
-	inventory, err := d.Store.GetInventoryStats(ctx, user.ID)
+func (d *dashboardService) GetDashboard(ctx context.Context, userID uuid.UUID) (datastruct.DashboardResponse, error) {
+	inventory, err := d.Store.GetInventoryStats(ctx, userID)
 	if err != nil {
 		errMsg := fmt.Errorf("failed to get inventory stats: %w", err)
 		return datastruct.DashboardResponse{}, errMsg
 	}
 
-	salesPerformance, err := d.getSalesPerformance(ctx, user)
+	salesPerformance, err := d.getSalesPerformance(ctx, userID)
 	if err != nil {
 		return datastruct.DashboardResponse{}, err
 	}
 
-	priceSoldByDate, err := d.getPriceSoldByDate(ctx, user)
+	priceSoldByDate, err := d.getPriceSoldByDate(ctx, userID)
 	if err != nil {
 		return datastruct.DashboardResponse{}, err
 	}
 
-	priceSoldByWeek, err := d.getPriceSoldByWeek(ctx, user)
+	priceSoldByWeek, err := d.getPriceSoldByWeek(ctx, userID)
 	if err != nil {
 		return datastruct.DashboardResponse{}, err
 	}
@@ -58,14 +59,14 @@ func (d *dashboardService) GetDashboard(ctx context.Context, user datastruct.Use
 	return dashboard, nil
 }
 
-func (d *dashboardService) getSalesPerformance(ctx context.Context, user datastruct.UserJWT) (float64, error) {
-	currWeekSale, err := d.Store.CurrentWeekSales(ctx, user.ID)
+func (d *dashboardService) getSalesPerformance(ctx context.Context, userID uuid.UUID) (float64, error) {
+	currWeekSale, err := d.Store.CurrentWeekSales(ctx, userID)
 	if err != nil {
 		errMsg := fmt.Errorf("failed to get current week sales: %w", err)
 		return 0, errMsg
 	}
 
-	lastWeekSales, err := d.Store.LastWeekSales(ctx, user.ID)
+	lastWeekSales, err := d.Store.LastWeekSales(ctx, userID)
 	if err != nil {
 		errMsg := fmt.Errorf("failed to get last week sales: %w", err)
 		return 0, errMsg
@@ -86,8 +87,8 @@ func (d *dashboardService) getSalesPerformance(ctx context.Context, user datastr
 	return salesPerformance, nil
 }
 
-func (d *dashboardService) getPriceSoldByDate(ctx context.Context, user datastruct.UserJWT) ([]repository.PriceSoldByDateRow, error) {
-	priceSoldByDate, err := d.Store.PriceSoldByDate(ctx, user.ID)
+func (d *dashboardService) getPriceSoldByDate(ctx context.Context, userID uuid.UUID) ([]repository.PriceSoldByDateRow, error) {
+	priceSoldByDate, err := d.Store.PriceSoldByDate(ctx, userID)
 	if err != nil {
 		errMsg := fmt.Errorf("failed to get price sold by date: %w", err)
 		return nil, errMsg
@@ -96,8 +97,8 @@ func (d *dashboardService) getPriceSoldByDate(ctx context.Context, user datastru
 	return priceSoldByDate, nil
 }
 
-func (d *dashboardService) getPriceSoldByWeek(ctx context.Context, user datastruct.UserJWT) ([]repository.PriceSoldByWeekRow, error) {
-	priceSoldByWeek, err := d.Store.PriceSoldByWeek(ctx, user.ID)
+func (d *dashboardService) getPriceSoldByWeek(ctx context.Context, userID uuid.UUID) ([]repository.PriceSoldByWeekRow, error) {
+	priceSoldByWeek, err := d.Store.PriceSoldByWeek(ctx, userID)
 	if err != nil {
 		errMsg := fmt.Errorf("failed to get price sold by week: %w", err)
 		return nil, errMsg

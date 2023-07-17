@@ -10,7 +10,7 @@ import (
 func (server *Server) listItems(ctx *gin.Context) {
 	user := ctx.MustGet("user").(datastruct.UserJWT)
 
-	items, err := server.ItemService.ListItems(ctx, user)
+	items, err := server.ItemService.ListItems(ctx, user.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
 		return
