@@ -3,7 +3,7 @@
 //   sqlc v1.18.0
 // source: item.sql
 
-package repository
+package sqlx
 
 import (
 	"context"

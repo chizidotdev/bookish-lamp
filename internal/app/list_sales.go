@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/chizidotdev/copia/internal/datastruct"
-	"github.com/chizidotdev/copia/internal/repository"
+	"github.com/chizidotdev/copia/internal/repository/sqlx"
 	"github.com/chizidotdev/copia/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -22,7 +22,7 @@ func (server *Server) listSales(ctx *gin.Context) {
 
 		ctx.JSON(http.StatusOK, sales)
 	} else {
-		sales, err := server.SaleService.ListSalesByItem(ctx, repository.ListSalesParams{
+		sales, err := server.SaleService.ListSalesByItem(ctx, sqlx.ListSalesParams{
 			ItemID: itemID,
 			UserID: user.ID,
 		})

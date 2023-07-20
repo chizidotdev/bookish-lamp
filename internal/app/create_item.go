@@ -3,7 +3,7 @@ package app
 import (
 	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/chizidotdev/copia/internal/dto"
-	"github.com/chizidotdev/copia/internal/repository"
+	"github.com/chizidotdev/copia/internal/repository/sqlx"
 	"github.com/chizidotdev/copia/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -18,7 +18,7 @@ func (server *Server) createItem(ctx *gin.Context) {
 
 	user := ctx.MustGet("user").(datastruct.UserJWT)
 
-	item, err := server.ItemService.CreateItem(ctx, repository.CreateItemParams{
+	item, err := server.ItemService.CreateItem(ctx, sqlx.CreateItemParams{
 		Title:        req.Title,
 		BuyingPrice:  req.BuyingPrice,
 		SellingPrice: req.SellingPrice,

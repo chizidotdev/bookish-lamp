@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/copia-rewrite.iml" filepath="$PROJECT_DIR$/.idea/copia-rewrite.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/copia-server.iml" filepath="$PROJECT_DIR$/.idea/copia-server.iml" />
     </modules>
   </component>
 </project>

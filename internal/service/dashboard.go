@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/chizidotdev/copia/internal/datastruct"
-	"github.com/chizidotdev/copia/internal/repository"
+	"github.com/chizidotdev/copia/internal/repository/sqlx"
 	"github.com/chizidotdev/copia/pkg/utils"
 	"github.com/google/uuid"
 	"math"
@@ -15,10 +15,10 @@ type DashboardService interface {
 }
 
 type dashboardService struct {
-	Store *repository.Store
+	Store *sqlx.Store
 }
 
-func NewDashboardService(store *repository.Store) DashboardService {
+func NewDashboardService(store *sqlx.Store) DashboardService {
 	return &dashboardService{
 		Store: store,
 	}
@@ -87,7 +87,7 @@ func (d *dashboardService) getSalesPerformance(ctx context.Context, userID uuid.
 	return salesPerformance, nil
 }
 
-func (d *dashboardService) getPriceSoldByDate(ctx context.Context, userID uuid.UUID) ([]repository.PriceSoldByDateRow, error) {
+func (d *dashboardService) getPriceSoldByDate(ctx context.Context, userID uuid.UUID) ([]sqlx.PriceSoldByDateRow, error) {
 	priceSoldByDate, err := d.Store.PriceSoldByDate(ctx, userID)
 	if err != nil {
 		errMsg := fmt.Errorf("failed to get price sold by date: %w", err)
@@ -97,7 +97,7 @@ func (d *dashboardService) getPriceSoldByDate(ctx context.Context, userID uuid.U
 	return priceSoldByDate, nil
 }
 
-func (d *dashboardService) getPriceSoldByWeek(ctx context.Context, userID uuid.UUID) ([]repository.PriceSoldByWeekRow, error) {
+func (d *dashboardService) getPriceSoldByWeek(ctx context.Context, userID uuid.UUID) ([]sqlx.PriceSoldByWeekRow, error) {
 	priceSoldByWeek, err := d.Store.PriceSoldByWeek(ctx, userID)
 	if err != nil {
 		errMsg := fmt.Errorf("failed to get price sold by week: %w", err)

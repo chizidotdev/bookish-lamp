@@ -5,29 +5,29 @@ import (
 	"errors"
 	"fmt"
 	"github.com/chizidotdev/copia/internal/dto"
-	"github.com/chizidotdev/copia/internal/repository"
+	"github.com/chizidotdev/copia/internal/repository/sqlx"
 	"github.com/chizidotdev/copia/pkg/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthService interface {
-	CreateUser(ctx context.Context, req repository.CreateUserParams) error
+	CreateUser(ctx context.Context, req sqlx.CreateUserParams) error
 	Login(ctx context.Context, request dto.LoginRequest) (string, error)
 }
 
 type authService struct {
-	Store        *repository.Store
+	Store        *sqlx.Store
 	tokenManager TokenManager
 }
 
-func NewAuthService(store *repository.Store, tokenManger TokenManager) AuthService {
+func NewAuthService(store *sqlx.Store, tokenManger TokenManager) AuthService {
 	return &authService{
 		Store:        store,
 		tokenManager: tokenManger,
 	}
 }
 
-func (a *authService) CreateUser(ctx context.Context, req repository.CreateUserParams) error {
+func (a *authService) CreateUser(ctx context.Context, req sqlx.CreateUserParams) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), 10)
 	if err != nil {
 		return fmt.Errorf("error hashing password: %w", err)

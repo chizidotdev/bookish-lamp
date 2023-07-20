@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/chizidotdev/copia/internal/repository"
+	"github.com/chizidotdev/copia/internal/repository/sqlx"
 	"github.com/chizidotdev/copia/pkg/utils"
 )
 
@@ -14,7 +14,7 @@ type Service struct {
 	UserService
 }
 
-func NewService(store *repository.Store) *Service {
+func NewService(store *sqlx.Store) *Service {
 	dashboard := NewDashboardService(store)
 	item := NewItemService(store)
 	sale := NewSaleService(store)

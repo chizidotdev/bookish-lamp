@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"github.com/chizidotdev/copia/internal/app"
-	"github.com/chizidotdev/copia/internal/repository"
+	"github.com/chizidotdev/copia/internal/repository/sqlx"
 	"github.com/chizidotdev/copia/internal/service"
 	"github.com/chizidotdev/copia/pkg/utils"
 	_ "github.com/lib/pq"
@@ -18,7 +18,7 @@ func main() {
 		log.Fatal("Cannot connect to db:", err)
 	}
 
-	store := repository.NewStore(conn)
+	store := sqlx.NewStore(conn)
 	newService := service.NewService(store)
 	server := app.NewServer(newService)
 

@@ -3,7 +3,7 @@
 //   sqlc v1.18.0
 // source: inventory.sql
 
-package repository
+package sqlx
 
 import (
 	"context"

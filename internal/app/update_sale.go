@@ -3,7 +3,7 @@ package app
 import (
 	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/chizidotdev/copia/internal/dto"
-	"github.com/chizidotdev/copia/internal/repository"
+	"github.com/chizidotdev/copia/internal/repository/sqlx"
 	"github.com/chizidotdev/copia/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -20,7 +20,7 @@ func (server *Server) updateSale(ctx *gin.Context) {
 	user := ctx.MustGet("user").(datastruct.UserJWT)
 	saleID := uuid.MustParse(ctx.Param("saleID"))
 
-	sale, err := server.SaleService.UpdateSale(ctx, repository.UpdateSaleParams{
+	sale, err := server.SaleService.UpdateSale(ctx, sqlx.UpdateSaleParams{
 		ID:           saleID,
 		UserID:       user.ID,
 		QuantitySold: req.QuantitySold,
