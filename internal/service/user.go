@@ -2,45 +2,37 @@ package service
 
 import (
 	"context"
-	"errors"
-	"fmt"
-	"github.com/chizidotdev/copia/internal/repository/sqlx"
-	"github.com/chizidotdev/copia/pkg/utils"
+	"github.com/chizidotdev/copia/internal/datastruct"
+	"github.com/chizidotdev/copia/internal/repository"
 )
 
 type UserService interface {
-	GetUserByEmail(ctx context.Context, email string) (sqlx.User, error)
-	ListUsers(ctx context.Context) ([]sqlx.User, error)
+	GetUserByEmail(ctx context.Context, email string) (datastruct.UserJWT, error)
+	ListUsers(ctx context.Context) ([]datastruct.UserJWT, error)
 	//UpdateUser(ctx *gin.Context)
 	//DeleteUser(ctx *gin.Context)
 }
 
 type userService struct {
-	Store        *sqlx.Store
+	Store        *repository.Store
 	tokenManager TokenManager
 }
 
-func NewUserService(store *sqlx.Store, tokenManger TokenManager) UserService {
+func NewUserService(store *repository.Store, tokenManger TokenManager) UserService {
 	return &userService{
 		Store:        store,
 		tokenManager: tokenManger,
 	}
 }
 
-func (u *userService) GetUserByEmail(ctx context.Context, email string) (sqlx.User, error) {
-	user, err := u.Store.GetUser(ctx, email)
-	if err != nil {
-		return sqlx.User{}, errors.New(utils.ErrorMessages.UserNotFound)
-	}
-
-	return user, nil
+// GetUserByEmail returns a user by email
+// TODO: Implement.
+func (u *userService) GetUserByEmail(ctx context.Context, email string) (datastruct.UserJWT, error) {
+	return datastruct.UserJWT{}, nil
 }
 
-func (u *userService) ListUsers(ctx context.Context) ([]sqlx.User, error) {
-	users, err := u.Store.ListUsers(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("error listing users: %w", err)
-	}
-
-	return users, nil
+// ListUsers returns a list of users
+// TODO: Implement.
+func (u *userService) ListUsers(ctx context.Context) ([]datastruct.UserJWT, error) {
+	return nil, nil
 }

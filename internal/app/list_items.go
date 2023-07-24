@@ -8,9 +8,9 @@ import (
 )
 
 func (server *Server) listItems(ctx *gin.Context) {
-	user := ctx.MustGet("user").(datastruct.UserJWT)
+	user := ctx.MustGet("user").(*datastruct.UserInfo)
 
-	items, err := server.ItemService.ListItems(ctx, user.ID)
+	items, err := server.ItemService.ListItems(ctx, user.Email)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
 		return

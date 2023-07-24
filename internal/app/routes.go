@@ -43,5 +43,5 @@ func createRoutes(server *Server) {
 	}
 
 	// DashboardService routes
-	server.router.GET("/inventory", server.isAuth, server.getDashboard)
+	server.router.GET("/inventory", server.isAuth, server.getReport)
 }

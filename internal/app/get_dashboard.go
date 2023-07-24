@@ -11,9 +11,9 @@ const (
 	DashboardError = "An error occurred while getting dashboard"
 )
 
-func (server *Server) getDashboard(ctx *gin.Context) {
-	user := ctx.MustGet("user").(datastruct.UserJWT)
-	dashboard, err := server.DashboardService.GetDashboard(ctx, user.ID)
+func (server *Server) getReport(ctx *gin.Context) {
+	user := ctx.MustGet("user").(*datastruct.UserInfo)
+	dashboard, err := server.DashboardService.GetDashboard(ctx, user.Email)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, utils.ErrorResponse(DashboardError))
 	}

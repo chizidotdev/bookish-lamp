@@ -7,6 +7,11 @@ type UserJWT struct {
 	ID    uuid.UUID `json:"id"`
 }
 
+type CreateUserParams struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type UserInfo struct {
 	Sub           string `json:"sub"`
 	GivenName     string `json:"given_name"`

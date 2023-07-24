@@ -1,8 +1,8 @@
 package app
 
 import (
+	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/chizidotdev/copia/internal/dto"
-	"github.com/chizidotdev/copia/internal/repository/sqlx"
 	"github.com/chizidotdev/copia/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -15,7 +15,7 @@ func (server *Server) createUser(ctx *gin.Context) {
 		return
 	}
 
-	err := server.AuthService.CreateUser(ctx, sqlx.CreateUserParams(req))
+	err := server.AuthService.CreateUser(ctx, datastruct.CreateUserParams(req))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
 		return
