@@ -3,10 +3,11 @@ package repository
 import (
 	"context"
 	"fmt"
+	"log"
+
 	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"log"
 )
 
 type Queries interface {
@@ -42,7 +43,7 @@ type Store struct {
 }
 
 func NewStore(db *gorm.DB) *Store {
-	err := db.AutoMigrate(&UserProfile{}, &Item{}, &Sale{})
+	err := db.AutoMigrate(&Item{}, &Sale{})
 	if err != nil {
 		log.Panic("Cannot migrate db:", err)
 	}

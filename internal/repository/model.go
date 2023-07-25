@@ -1,9 +1,10 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"time"
 )
 
 // Base contains common columns for all tables.
@@ -21,13 +22,13 @@ func (base *Base) BeforeCreate(db *gorm.DB) error {
 	return nil
 }
 
-type UserProfile struct {
-	Email     string `gorm:"primaryKey"`
-	FirstName string
-	LastName  string
-	Items     []Item `gorm:"foreignKey:UserEmail;"`
-	Sales     []Sale `gorm:"foreignKey:UserEmail;"`
-}
+// type UserProfile struct {
+// 	Email     string `gorm:"primaryKey"`
+// 	FirstName string
+// 	LastName  string
+// 	Items     []Item `gorm:"foreignKey:UserEmail;"`
+// 	Sales     []Sale `gorm:"foreignKey:UserEmail;"`
+// }
 
 type Item struct {
 	Base
@@ -36,7 +37,7 @@ type Item struct {
 	SellingPrice float32 `gorm:"not null;"`
 	Quantity     int64   `gorm:"not null;"`
 	Sales        []Sale
-	UserEmail    string
+	UserEmail    string `gorm:"not null;"`
 }
 
 type Sale struct {
@@ -46,7 +47,7 @@ type Sale struct {
 	SaleDate     time.Time `gorm:"not null;"`
 	CustomerName string    `gorm:"not null;"`
 	ItemID       uuid.UUID
-	UserEmail    string
+	UserEmail    string `gorm:"not null;"`
 }
 
 //type Order struct {
