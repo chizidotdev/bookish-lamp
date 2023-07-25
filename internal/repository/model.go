@@ -9,10 +9,10 @@ import (
 
 // Base contains common columns for all tables.
 type Base struct {
-	ID        uuid.UUID `gorm:"primaryKey;"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	ID        uuid.UUID      `gorm:"primaryKey;column:id;"`
+	CreatedAt time.Time      `gorm:"column:created_at;"`
+	UpdatedAt time.Time      `gorm:"column:updated_at;"`
+	DeletedAt gorm.DeletedAt `gorm:"index;column:deleted_at;"`
 }
 
 // BeforeCreate will set a UUID rather than numeric ID.
@@ -32,22 +32,22 @@ func (base *Base) BeforeCreate(db *gorm.DB) error {
 
 type Item struct {
 	Base
-	Title        string  `gorm:"not null;"`
-	BuyingPrice  float32 `gorm:"not null;"`
-	SellingPrice float32 `gorm:"not null;"`
-	Quantity     int64   `gorm:"not null;"`
-	Sales        []Sale
-	UserEmail    string `gorm:"not null;"`
+	Title        string  `gorm:"not null;column:title;"`
+	BuyingPrice  float32 `gorm:"not null;column:buying_price;"`
+	SellingPrice float32 `gorm:"not null;column:selling_price;"`
+	Quantity     int64   `gorm:"not null;column:quantity;"`
+	Sales        []Sale  `gorm:"foreignKey:ItemID;"`
+	UserEmail    string  `gorm:"not null;column:user_email;"`
 }
 
 type Sale struct {
 	Base
-	QuantitySold int64     `gorm:"not null;"`
-	SalePrice    float32   `gorm:"not null;"`
-	SaleDate     time.Time `gorm:"not null;"`
-	CustomerName string    `gorm:"not null;"`
-	ItemID       uuid.UUID
-	UserEmail    string `gorm:"not null;"`
+	QuantitySold int64     `gorm:"not null;column:quantity_sold;"`
+	SalePrice    float32   `gorm:"not null;column:sale_price;"`
+	SaleDate     time.Time `gorm:"not null;column:sale_date;"`
+	CustomerName string    `gorm:"not null;column:customer_name;"`
+	ItemID       uuid.UUID `gorm:"not null;column:item_id;"`
+	UserEmail    string    `gorm:"not null;column:user_email;"`
 }
 
 //type Order struct {
