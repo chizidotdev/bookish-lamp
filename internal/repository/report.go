@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+
 	"github.com/chizidotdev/copia/internal/datastruct"
 	"gorm.io/gorm/clause"
 )
@@ -15,12 +16,20 @@ type GetInventoryStatsRow struct {
 
 func (s *Store) GetInventoryStats(_ context.Context, userEmail string) (GetInventoryStatsRow, error) {
 	var result GetInventoryStatsRow
-	err := s.DB.Model(&Item{}).
-		Select("(SELECT COUNT(*) FROM items WHERE items.user_email = ?) AS total_items", userEmail).
-		Select("(SELECT COUNT(*) FROM items WHERE items.user_email = ? AND items.quantity <= 5) AS low_stock_items", userEmail).
-		Select("(SELECT COUNT(*) FROM sales WHERE sales.user_email = ? LIMIT 10) AS recent_sales", userEmail).
-		//Select("(SELECT COUNT(*) FROM orders WHERE orders.user_email = ? AND orders.status = 'Pending') AS pending_orders", userEmail).
-		Scan(&result).Error
+	err := s.DB.Model(&Item{}).Where("user_email = ?", userEmail).Count(&result.TotalItems).Error
+	if err != nil {
+		return result, err
+	}
+
+	err = s.DB.Model(&Item{}).Where("user_email = ? AND quantity < 5", userEmail).Count(&result.LowStockItems).Error
+	if err != nil {
+		return result, err
+	}
+
+	err = s.DB.Model(&Sale{}).Where("user_email = ?", userEmail).Count(&result.RecentSales).Error
+	if err != nil {
+		return result, err
+	}
 
 	return result, err
 }
