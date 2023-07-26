@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+
 	"github.com/chizidotdev/copia/internal/datastruct"
 	"github.com/google/uuid"
 )
@@ -56,7 +57,7 @@ func (s *Store) UpdateItemQuantity(_ context.Context, arg datastruct.UpdateItemQ
 		return item, err
 	}
 
-	item.Quantity = arg.Quantity
+	item.Quantity = item.Quantity + arg.Quantity
 	err := s.DB.Save(&item).Error
 
 	return item, err
