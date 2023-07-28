@@ -1,7 +1,5 @@
 package utils
 
-import "github.com/gin-gonic/gin"
-
 type errorMessages struct {
 	SignUpError,
 	LoginError,
@@ -15,6 +13,10 @@ var ErrorMessages = errorMessages{
 	UserNotFound: "User not found",
 }
 
-func ErrorResponse(message string) gin.H {
-	return gin.H{"error": message}
+func ErrorResponse(message string) string {
+	return message
 }
+
+// func ErrorResponse(message string) gin.H {
+// 	return gin.H{"error": message}
+// }

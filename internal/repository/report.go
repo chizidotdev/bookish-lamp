@@ -37,7 +37,7 @@ func (s *Store) GetInventoryStats(_ context.Context, userEmail string) (GetInven
 func (s *Store) PriceSoldByWeek(_ context.Context, userEmail string) ([]datastruct.PriceSoldByWeekRow, error) {
 	var results []datastruct.PriceSoldByWeekRow
 	err := s.DB.Model(&Sale{}).
-		Select("DATE_TRUNC('week', sale_date) AS date, SUM(sale_price) AS total_sale_price").
+		Select("DATE_TRUNC('week', sale_date) AS date, SUM(sale_price * quantity_sold) AS total_sale_price").
 		Where("user_email = ?", userEmail).
 		Group("DATE_TRUNC('week', sale_date)").
 		Order(clause.Expr{SQL: "DATE_TRUNC('week', sale_date)"}).
@@ -49,7 +49,7 @@ func (s *Store) PriceSoldByWeek(_ context.Context, userEmail string) ([]datastru
 func (s *Store) PriceSoldByDate(_ context.Context, userEmail string) ([]datastruct.PriceSoldByDateRow, error) {
 	var results []datastruct.PriceSoldByDateRow
 	err := s.DB.Model(&Sale{}).
-		Select("DATE_TRUNC('day', sale_date) AS date, SUM(sale_price) AS total_sale_price").
+		Select("DATE_TRUNC('day', sale_date) AS date, SUM(sale_price * quantity_sold) AS total_sale_price").
 		Where("user_email = ?", userEmail).
 		Group("DATE_TRUNC('day', sale_date)").
 		Order(clause.Expr{SQL: "DATE_TRUNC('day', sale_date)"}).
